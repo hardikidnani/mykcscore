@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.1.5/angular.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.3.9/d3.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/nvd3/1.1.13-beta/nv.d3.min.js"></script>
+        <script src="http://cmaurer.github.io/angularjs-nvd3-directives/lib/angularjs-nvd3-directives/dist/angularjs-nvd3-directives.js"></script>
+	<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
+	<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+	<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+	<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+	<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/latest/css/bootstrap.css" /> 
+	<script>window.jQuery || document.write('<script src="{{url_for('static', filename='jquery.js') }}">\x3C/script>')</script>
+	<script type=text/javascript> $SCRIPT_ROOT = {{ request.script_root|tojson|safe }}; </script>
+<style type="text/css">
+
+#container{
+
+  float: left;
+
+}
+
+#scores-table{
+
+
+      table-layout: auto;
+     /* width: 100%;*/
+     border-collapse: collapse;
+
+}
+ tr:nth-of-type(odd) { 
+    background: #eee; 
+  }
+  th { 
+    background: #333; 
+    color: white; 
+    font-weight: bold; 
+    cursor: s-resize;
+    background-repeat: no-repeat;
+        background-position: 3% center;
+  }
+  td, th { 
+    padding: 6px; 
+    border: 1px solid #ccc; 
+    text-align: left; 
+  }
+  
+  th.des:after {
+      content: "\21E9";
+    }
+    
+    th.aes:after {
+      content: "\21E7";
+    }
+#chart svg {
+  width: 900px;
+  height: 600px;
+}
+
+#everything{
+  width:600px;
+  margin:20px;
+}
+
+#d3-container{
+
+  display: none;
+}
+#chart{
+  width:600px;
+  height:400px;
+  display: none;
+}
+.bar{
+  fill: lightskyblue;
+}
+text.label{
+  fill: #777777;
+  color: #777777;
+  font-size: 20px;
+  font-weight: bold;
+}
+text.category{
+  fill: #666666;
+  font-size: 14px;
+}
+
+</style>
+	<title> Client Scoring </title>
+</head>
+<script type="text/javascript">
+
+function setVisibility(id, visibility) {
+document.getElementById(id).style.display = visibility;
+}
+
+
+window.onload=function(){
+  document.getElementById("runscore").style.display='none';
+
+}
+$(document).ready(function() {
+			loadClients();
+		})
+		
+		loadClients = function(){
+			$.ajax({
+				type: 'GET',
+				url: '/clients',
+				success: generateClientDropdown
+			})
+		}
+		
+generateClientDropdown = function(result) {
+		var html = '';
+			$('#clients').html('<option>Choose a client<option>');
+			for (var i=0; i < result.results.items.length; i++) {
+				var clientObj = result.results.items[i];
+				$('#clients').html($('#clients').html() + '<option value="' + clientObj.id + '">' + clientObj.name + '</option>');
+			}
+			
+			$('#clients').change(function() {
+				var option = $(this).find('option:selected').val();
+				$('#profiles-container').html('<select id="profiles" class="form-control"><option>Loading profiles...</option></select>');
+				$.ajax({
+					type: 'GET',
+					url: '/profile',
+					data:{'clientid':option},
+					success: [generateProfileDropdown]
+				});
+			});
+		}
+		
+generateProfileDropdown = function(result) {
+			var html = '';
+			$('#profiles').html('<option>Choose a profile</option>');
+			for (var i=0; i < result.results.items.length; i++) {
+				var profileObj = result.results.items[i];
+				$('#profiles').html($('#profiles').html() + '<option value="' + profileObj.accountId + '">'+ profileObj.name + '</option>');
+				//console.log(profileObj);
+			}
+			
+			$('#profiles').change(function() {
+				var option = $(this).find('option:selected').val();
+				$('#views-container').html('<select id="views" class="form-control"><option>Loading views...</option></select>');
+				$.ajax({
+					url: '/views',
+					data: {'dprofile':profileObj.accountId,'wp':profileObj.id},
+					type: 'GET',
+					success: [generateViewDropdown]
+				});
+			});			
+		}
+
+
+generateViewDropdown = function(result) {
+			var html = '';
+			$('#views').html('<option>Choose a View</option>');
+			for (var i=0; i < result.results.items.length; i++) {
+				var viewObj = result.results.items[i];
+
+				$('#views').html($('#views').html() + '<option value="' + viewObj.id + '">' + viewObj.name + '</option>');
+      }
+
+      $('#views').change(function(){
+        console.log("trial");
+        $("#runscore").show();
+      });
+
+
+	 }
+
+$(function() {
+
+    var start = moment().subtract(29, 'days');
+    var end = moment();
+
+    function cb(start, end) {
+        $('#reportrange span').html(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'));
+         var startd = start.format('YYYY-MM-DD');
+         var endd = end.format('YYYY-MM-DD');
+    }
+
+    $('#reportrange').daterangepicker({
+        startDate: start,
+        endDate: end,
+        ranges: {
+           'Today': [moment(), moment()],
+           'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+           'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+           'This Month': [moment().startOf('month'), moment().endOf('month')],
+           'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        }
+    }, cb);
+
+    cb(start, end);
+    
+});
+
+		
+generateScoresTable = function(result) {
+			var html = '<table id="scores-table"><tr><th>Page</th><th>Score</th></tr>';
+			var parsed=JSON.parse(result.results);
+			//html +='<p>'+parsed.length+'</p>';
+			for (var i = 0; i < parsed.length; i++) {
+				var scoreObj = parsed[i];
+				html += '<tr><td>' + scoreObj.pageTitle + '</td><td>' + scoreObj.oms + '</td>' ;//+ scoreObj.sessions + '</td><td>' + scoreObj['B.Sessions'] + '</td><td>' + scoreObj.users + '</td><td>' +  scoreObj['B.Users'] +'</td></tr>';
+			}
+			html+= '</table>';
+			$('#scores-container').html(html);
+		}
+
+
+function benchmark(){
+
+
+	var bstartd = moment(startd);
+                bstartd.add(-90,'days');
+              bstartd.format("YYYY-MM-DD");
+
+	var bendd = moment(endd);
+                bendd.add(-1,'days');
+                bendd.format("YYYY-MM-DD");
+}
+
+function runscore(result) {
+ 
+var html = '';
+				var viewid=document.getElementById("views").value;
+        //alert("press");
+       // d3.select("#chart").selectAll("svg").remove();
+       // var data=JSON.parse(result.results);
+        //console.log(viewid);
+				var dateRange = document.getElementById("rangeValue").innerHTML;
+                var split = dateRange.split(" - ");
+                var startd = split[0].trim();
+                var endd = split[1].trim();
+             	
+				var bstartd = moment(startd);
+                bstartd.add(-90,'days');
+              	bstartd.format("YYYY-MM-DD");
+              	//console.log(bstartd);
+              	var bs=bstartd.format("YYYY-MM-DD");
+              	//console.log(bs);
+
+				var bendd = moment(endd);
+                bendd.add(-1,'days');
+                bendd.format("YYYY-MM-DD");
+                var be=bendd.format("YYYY-MM-DD");
+                //console.log(be);
+                //console.log(bendd);
+          var proc = new Date().getTime();
+				$('#scores-container').html('Loading scores...');
+				$.ajax({
+					url: '/prog',
+					data: {'profileid':viewid,'bstartd':bs,'bendd':be,'startd':startd,'endd':endd},
+					type: 'GET',
+					success: [generateScoresTable,generated2graph]
+           
+
+				});	
+
+}
+
+var proc = new Date().getTime();
+function AJAXSuccessFunction() {
+    console.log(new Date().getTime() - proc);
+}
+
+
+
+
+generated2graph=function(result){
+
+  var setup = function(targetID){
+  
+  //Set size of svg element and chart
+  setVisibility('d3-container', 'inline');
+  var margin = {top: 0, right: 0, bottom: 0, left: 0},
+    width = 600 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom,
+    categoryIndent = 4*15 + 5,
+    defaultBarWidth = 2000;
+
+  //Set up scales
+  var x = d3.scale.linear()
+    .domain([0,defaultBarWidth])
+    .range([0,width]);
+  var y = d3.scale.ordinal()
+    .rangeRoundBands([0, height], 0.1, 0);
+
+  //Create SVG element
+  d3.select(targetID).selectAll("svg").remove()
+  var svg = d3.select(targetID).append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  
+  //Package and export settings
+  var settings = {
+    margin:margin, width:width, height:height, categoryIndent:categoryIndent,
+    svg:svg, x:x, y:y
+  }
+  return settings;
+}
+
+var redrawChart = function(targetID, newdata) {
+
+  //Import settings
+  var margin=settings.margin, width=settings.width, height=settings.height, categoryIndent=settings.categoryIndent, 
+  svg=settings.svg, x=settings.x, y=settings.y;
+
+  //Reset domains
+  y.domain(newdata.sort(function(a,b){
+    return b.oms - a.oms;
+  })
+    .map(function(d) { return d.pageTitle; }));
+  var barmax = d3.max(newdata, function(e) {
+    return e.oms;
+  });
+  x.domain([0,barmax]);
+
+  /////////
+  //ENTER//
+  /////////
+
+  //Bind new data to chart rows 
+
+  //Create chart row and move to below the bottom of the chart
+  var chartRow = svg.selectAll("g.chartRow")
+    .data(newdata, function(d){ return d.pageTitle});
+  var newRow = chartRow
+    .enter()
+    .append("g")
+    .attr("class", "chartRow")
+    .attr("transform", "translate(0," + height + margin.top + margin.bottom + ")")
+    .on("click",function(d){
+                            setVisibility('chart', 'inline');
+                            //d3.select("#chart").selectAll("svg").remove()
+                            data1=d3.select(this);
+                            data1=d;
+                            var chart = nv.models.multiBarHorizontalChart()
+                            .x(function(d) { return d.x })
+                            .y(function(d) { return d.y })
+                            .margin({top: 30, right: 20, bottom: 50, left: 175})
+                            .showValues(true)  
+                            .transitionDuration(350)
+                            //.stacked(false)
+                            .showControls(true).tooltips(true);
+                            console.log("enter");
+                //d3.select("#d3-container").select("svg").remove();
+                //function 
+                d3.select('#chart svg').datum([
+  {
+    key: "Performance",
+    visible: false,
+    color: "#51A351",
+    values:
+      [      
+        { x : "Sessions", y : (data1.sessions)/100 },
+        { x : "Users", y : (data1.users)/100 },
+        { x : "Pageviews", y : (data1.pageviews)/100 },  
+        { x : "Unique Pageviews", y : (data1.uniquePageviews)/100 },
+        { x : "Time on Page", y : ((data1.avgTimeOnPage)/60)*100 },
+        { x : "Bounce Rate", y : data1.bounceRate }    
+      ]
+  },
+  {
+    key: "Benchmark",
+    color: "#BD362F",
+    visible: true,
+    values:
+      [
+        { x : "Sessions", y : (data1['B.Sessions'])/100 },
+        { x : "Users", y : (data1['B.Users'])/100 },
+        { x : "Pageviews", y : (data1['B.PageViews'])/100 },  
+        { x : "Unique Pageviews", y : (data1['B.UniquePVS'])/100},
+        { x : "Time on Page", y : ((data1['B.TOP'])/60)*100 },
+        { x : "Bounce Rate", y : data1['B.BounceRate'] }          
+        
+      ]
+  },
+]).transition().duration(500)
+    .call(chart)
+    console.log(((data1.avgTimeOnPage)/60)*10);
+    console.log((data1.avgTimeOnPage)/60);
+    console.log(((data1.avgTimeOnPage)/60)/10);
+
+    nv.utils.windowResize(chart.update);
+
+    /*.each("end", function() {
+        d3.select("g.nv-legendWrap").selectAll("g.nv-series")
+            .filter(function(d) { return d.visible == false; })
+            .each(function(d) {
+                this.dispatchEvent(new Event("click"));
+            });*/
+      console.log("exit");   
+
+    });
+
+    
+
+                 //});
+                //console.log(data);
+                //var data = [{ "key":"Performance","color": "#d67777",""}]
+                /*console.log(data);
+
+                var margin = {top: 20, right: 20, bottom: 70, left: 40},
+                width = 600 - margin.left - margin.right,
+                height = 300 - margin.top - margin.bottom;
+
+                var x = d3.scale.ordinal().rangeRoundBands([0, width], .05);
+
+                var y = d3.scale.linear().range([height, 0]);
+
+                var xAxis = d3.svg.axis()
+                .scale(x)
+                .orient("bottom")
+
+
+                var yAxis = d3.svg.axis()
+                      .scale(y)
+                      .orient("left")
+                      .ticks(10);
+
+                  var svg = d3.select("#chart").append("svg")
+                      .attr("width", width + margin.left + margin.right)
+                      .attr("height", height + margin.top + margin.bottom)
+                    .append("g")
+                      .attr("transform", 
+                            "translate(" + margin.left + "," + margin.top + ")");
+
+                     //data.forEach(function(d) {
+                    //d.pageTitle = d.pageTitle;
+                    //d.oms = +d.oms;
+
+                  //});
+
+
+                      x.domain(data.map(function(d) { return d.pageTitle; }));
+                      y.domain([0, d3.max(data, function(d) { return d.oms; })]);
+
+
+
+                      svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-.8em")
+      .attr("dy", "-.55em")
+      .attr("transform", "rotate(-90)" );
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Value ($)");
+
+  svg.selectAll("bar")
+      .data(data)
+    .enter().append("rect")
+      .style("fill", "steelblue")
+      .attr("x", function(d) { return x(d.pageTitle); })
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { return y(d.oms); })
+      .attr("height", function(d) { return height - y(d.oms); });
+
+
+
+           /*     var sortAscending = true;
+      var table = d3.select('#d3-container').append('table');
+      var titles = d3.keys(data[0]);
+      console.log(data[0]);
+      var headers = table.append('thead').append('tr')
+                       .selectAll('th')
+                       .data(titles).enter()
+                       .append('th')
+                       .text(function (d) {
+                          return d;
+                        })
+                       .on('click', function (d) {
+                         headers.attr('class', 'header');
+                         
+                         if (sortAscending) {
+                           rows.sort(function(a, b) { return b[d] < a[d]; });
+                           sortAscending = false;
+                           this.className = 'aes';
+                         } else {
+                         rows.sort(function(a, b) { return b[d] > a[d]; });
+                         sortAscending = true;
+                         this.className = 'des';
+                         }
+                         
+                       });
+      
+      var rows = table.append('tbody').selectAll('tr')
+                   .data(data).enter()
+                   .append('tr');
+      rows.selectAll('td')
+        .data(function (d) {
+          return titles.map(function (k) {
+            return { 'value': d[k], 'name': k};
+          });
+        }).enter()
+        .append('td')
+        .attr('data-th', function (d) {
+          return d.name;
+        })
+        .text(function (d) {
+          return d.value;
+        });*/
+
+//function type(d) {
+  //d.oms = +d.oms;
+  //return d;
+//}
+
+   
+
+                          /*var setup = function(targetID){
+                          
+                          //Set size of svg element and chart
+                          var margin = {top: 0, right: 0, bottom: 0, left: 0},
+                          width = 600 - margin.left - margin.right,
+                          height = 400 - margin.top - margin.bottom,
+                          categoryIndent = 4*15 + 5,
+                          defaultBarWidth = 2000;
+
+                          //Set up scales
+                          var x = d3.scale.linear()
+                            .domain([0,defaultBarWidth])
+                            .range([0,width]);
+                          var y = d3.scale.ordinal()
+                            .rangeRoundBands([0, height], 0.1, 0);
+
+                          //Create SVG element
+                          d3.select(targetID).selectAll("svg").remove()
+                          var svg = d3.select(targetID).append("svg")
+                            .attr("width", width + margin.left + margin.right)
+                            .attr("height", height + margin.top + margin.bottom)
+                            .append("g")
+                            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  
+                          //Package and export settings
+                        var settings = {
+                            margin:margin, width:width, height:height, categoryIndent:categoryIndent,
+                            svg:svg, x:x, y:y
+                            }
+                            return settings;
+                        }
+
+    
+                        var redrawChart = function(targetID, newdata){
+
+                        var margin=settings.margin, width=settings.width, height=settings.height, categoryIndent=settings.categoryIndent, 
+                        svg=settings.svg, x=settings.x, y=settings.y;
+
+                        //Reset domains
+                        y.domain(newdata.sort(function(a,b){
+                              return b.sessions - a.sessions;
+                          })
+                          .map(function(d) { return d.pageTitle; }));
+                      
+                        var barmax = d3.max(newdata, function(e) {8
+                          return e.sessions;
+                          });
+                        x.domain([0,barmax]);
+
+                          /////////
+                          //ENTER//
+                          /////////
+
+                          //Bind new data to chart rows 
+
+                        //Create chart row and move to below the bottom of the chart
+                        var chartRow = svg.selectAll("g.chartRow")
+                          .data(newdata, function(d){ return d.pageTitle});
+  
+                        var newRow = chartRow
+                          .enter()
+                          .append("g")
+                          .attr("class", "chartRow")
+                          .attr("transform", "translate(0," + height + margin.top + margin.bottom + ")")
+                          newRow.insert("rect")
+                          .attr("class","bar")
+                          .attr("x", 0)
+                          .attr("opacity",0)
+                          .attr("height", y.rangeBand())
+                          .attr("width", function(d) { return x(d.sessions);}) 
+
+
+                          //Add value labels
+                          newRow.append("text")
+                            .attr("class","label")
+                            .attr("y", y.rangeBand()/2)
+                            .attr("x",0)
+                            .attr("opacity",0)
+                            .attr("dy",".35em")
+                            .attr("dx","0.5em")
+                            .text(function(d){return d.sessions;}); 
+  
+                          //Add Headlines
+                          newRow.append("text")
+                            .attr("class","category")
+                            .attr("text-overflow","ellipsis")
+                            .attr("y", y.rangeBand()/2)
+                            .attr("x",categoryIndent)
+                            .attr("opacity",0)
+                            .attr("dy",".35em")
+                            .attr("dx","0.5em")
+                            .text(function(d){return d.pageTitle});
+
+
+                            //////////
+                            //UPDATE//
+                            //////////
+  
+                          //Update bar widths
+                          chartRow.select(".bar").transition()
+                            .duration(300)
+                            .attr("width", function(d) { return x(d.sessions);})
+                            .attr("opacity",1);
+
+                          //Update data labels
+                          chartRow.select(".label").transition()
+                          .duration(300)
+                          .attr("opacity",1)
+                          .tween("text", function(d) { 
+                          var i = d3.interpolate(+this.textContent.replace(/\,/g,''), +d.sessions);
+                            return function(t) {
+                                this.textContent = Math.round(i(t));
+                                  };
+                           });
+
+                          //Fade in categories
+                          chartRow.select(".category").transition()
+                          .duration(300)
+                          .attr("opacity",1);
+
+
+                          ////////
+                          //EXIT//
+                          ////////
+
+                          //Fade out and remove exit elements
+                          chartRow.exit().transition()
+                          .style("opacity","0")
+                          .attr("transform", "translate(0," + (height + margin.top + margin.bottom) + ")")
+                          .remove();
+
+
+                          ////////////////
+                          //REORDER ROWS//
+                          ////////////////
+
+                          var delay = function(d, i) { return 200 + i * 30; };
+
+                          chartRow.transition()
+                            .delay(delay)
+                            .duration(900)
+                            .attr("transform", function(d){ return "translate(0," + y(d.pageTitle) + ")"; });
+                          };
+
+
+
+                          //Pulls data
+                          //Since our data is fake, adds some random changes to simulate a data stream.
+                          //Uses a callback because d3.json loading is asynchronous
+                          var pullData = function(settings,callback){
+                            
+                              //var data=d3.select(this);
+                               var data=JSON.parse(result.results);
+                              console.log(data);
+                              var newData = data;
+                              data.forEach(function(d,i){
+                                var newValue = d.sessions //+ Math.floor((Math.random()*5))
+                                //console.log(newValue);
+                                newData[i].oms = newValue //<= 0 ? 10 : newValue
+                              })
+
+                              newData = formatData(newData);
+
+                              callback(settings,newData);
+                          }
+
+                          //Sort data in descending order and take the top 10 values
+                          var formatData = function(data){
+                              return data.sort(function (a, b) {
+                                  return b.sessions - a.sessions;
+                                })
+                              .slice(0, 10);
+                          }
+
+
+                           //d3.select(this).style("fill", "red");
+                          // d is the current data
+                            //console.log(d);
+                            var redraw = function(settings){
+                            pullData(settings,redrawChart)
+                            }
+
+                      //setup (includes first draw)
+                          var settings = setup('#chart');
+                          redraw(settings)
+                            /*var html = '<table id="scores-table"><tr><th>Page</th><th>Score</th><th>Sessions</th><th>B.Sessions</th><th>Users</th><th>B.Users</th></tr>';
+                            var parsed=JSON.parse(result.results);
+                            //html +='<p>'+parsed.length+'</p>';
+                            for (var i = 0; i < parsed.length; i++) {
+                              var scoreObj = parsed[i];
+                              html += '<tr><td>' + scoreObj.pageTitle + '</td><td>' + scoreObj.oms + '</td><td>' + scoreObj.sessions + '</td><td>' + scoreObj['B.Sessions'] + '</td><td>' + scoreObj.users + '</td><td>' +  scoreObj['B.Users'] +'</td></tr>';
+                            }
+                            html+= '</table>';
+                            alert(html);*/
+
+
+
+                          //});
+
+  //Add rectangles
+  newRow.insert("rect")
+    .attr("class","bar")
+    .attr("x", 0)
+    .attr("opacity",0)
+    .attr("height", y.rangeBand())
+    .attr("width", function(d) { return x(d.oms);}) 
+
+
+  //Add value labels
+  newRow.append("text")
+    .attr("class","label")
+    .attr("y", y.rangeBand()/2)
+    .attr("x",0)
+    .attr("opacity",0)
+    .attr("dy",".35em")
+    .attr("dx","0.5em")
+    .text(function(d){return d.oms;}); 
+  
+  //Add Headlines
+  newRow.append("text")
+    .attr("class","category")
+    .attr("text-overflow","ellipsis")
+    .attr("y", y.rangeBand()/2)
+    .attr("x",categoryIndent)
+    .attr("opacity",0)
+    .attr("dy",".35em")
+    .attr("dx","0.5em")
+    .text(function(d){return d.pageTitle});
+
+
+  //////////
+  //UPDATE//
+  //////////
+  
+  //Update bar widths
+  chartRow.select(".bar").transition()
+    .duration(300)
+    .attr("width", function(d) { return x(d.oms);})
+    .attr("opacity",1);
+
+  //Update data labels
+  chartRow.select(".label").transition()
+    .duration(300)
+    .attr("opacity",1)
+    .tween("text", function(d) { 
+    var i = d3.interpolate(+this.textContent.replace(/\,/g,''), +d.oms);
+    return function(t) {
+      this.textContent = Math.round(i(t));
+    };
+    });
+
+  //Fade in categories
+  chartRow.select(".category").transition()
+    .duration(300)
+    .attr("opacity",1);
+
+
+  ////////
+  //EXIT//
+  ////////
+
+  //Fade out and remove exit elements
+  chartRow.exit().transition()
+    .style("opacity","0")
+    .attr("transform", "translate(0," + (height + margin.top + margin.bottom) + ")")
+    .remove();
+
+
+  ////////////////
+  //REORDER ROWS//
+  ////////////////
+
+  var delay = function(d, i) { return 200 + i * 30; };
+
+  chartRow.transition()
+    .delay(delay)
+    .duration(900)
+    .attr("transform", function(d){ return "translate(0," + y(d.pageTitle) + ")"; });
+};
+
+
+
+//Pulls data
+//Since our data is fake, adds some random changes to simulate a data stream.
+//Uses a callback because d3.json loading is asynchronous
+var pullData = function(settings,callback){
+  
+    var data=JSON.parse(result.results);
+    console.log(data);
+    var newData = data;
+    data.forEach(function(d,i){
+      var newValue = d.oms + Math.floor((Math.random()*5))
+      //console.log(newValue);
+      newData[i].oms = newValue <= 0 ? 10 : newValue
+    })
+
+    newData = formatData(newData);
+
+    callback(settings,newData);
+}
+
+//Sort data in descending order and take the top 10 values
+var formatData = function(data){
+    return data.sort(function (a, b) {
+        return b.oms - a.oms;
+      })
+    .slice(0, 10);
+}
+
+//I like to call it what it does
+var redraw = function(settings){
+  pullData(settings,redrawChart)
+}
+
+//setup (includes first draw)
+var settings = setup('#d3-container');
+redraw(settings)
+
+//Repeat every 3 seconds
+//setInterval(function(){
+  //redraw(settings)
+//}, 3000);
+
+}
+</script>
+  <body>
+  	<div class="container">
+  		<h3>Clients</h3>
+      </br>
+  		<div id="clients-container">
+  		<select id="clients"><option>Loading clients...</option></select>
+      </div>
+  	  </br>
+  		<div id="profiles-container"></div>
+  	  </br>
+  		<div id="views-container"></div>
+  	  </br>
+      <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px; border: 1px solid #ccc">
+       <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+      <span id="rangeValue"></span> <b class="caret"></b> </div>
+       </br>
+       <input type="button"id="runscore" class="button" name="button" value="Calculate Scores" onClick="runscore();setVisibility('chart', 'none');setVisibility('d3-container', 'none');">
+       </br>
+       <div id="scores-container"></div>
+     </br>
+		   <div id="d3-container"></div>
+     </br>
+        <div id="chart">
+        <svg></svg>
+       </div>
+     </br>
+	</div>
+  </body>
+</html>
+     

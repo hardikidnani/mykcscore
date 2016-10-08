@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+	<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
+	<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+	<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+	<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+	<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/latest/css/bootstrap.css" /> 
+	<script>window.jQuery || document.write('<script src="{{url_for('static', filename='jquery.js') }}">\x3C/script>')</script>
+	<script type=text/javascript> $SCRIPT_ROOT = {{ request.script_root|tojson|safe }}; </script>
+<style type="text/css">
+
+.container {
+
+	 padding: 25px;
+	 height: 200px;
+    width: 50%;
+}
+
+.bar {
+  fill: steelblue;
+}
+
+.bar:hover {
+  fill: brown;
+}
+
+.axis {
+  font: 10px sans-serif;
+}
+</style>
+	<title> Client Scoring </title>
+</head>
+<script type="text/javascript">
+$(document).ready(function() {
+			loadClients();
+		})
+		
+		loadClients = function(){
+			$.ajax({
+				type: 'GET',
+				url: '/clients',
+				success: generateClientDropdown
+			})
+		}
+		
+generateClientDropdown = function(result) {
+		var html = '';
+			$('#clients').html('<option>Choose a client<option>');
+			for (var i=0; i < result.results.items.length; i++) {
+				var clientObj = result.results.items[i];
+				$('#clients').html($('#clients').html() + '<option value="' + clientObj.id + '">' + clientObj.name + '</option>');
+			}
+			
+			$('#clients').change(function() {
+				var option = $(this).find('option:selected').val();
+				$('#profiles-container').html('<select id="profiles" class="form-control"><option>Loading profiles...</option></select>');
+				$.ajax({
+					type: 'GET',
+					url: '/profile',
+					data:{'clientid':option},
+					success: [generateProfileDropdown]
+				});
+			});
+		}
+		
+generateProfileDropdown = function(result) {
+			var html = '';
+			$('#profiles').html('<option>Choose a profile</option>');
+			for (var i=0; i < result.results.items.length; i++) {
+				var profileObj = result.results.items[i];
+				$('#profiles').html($('#profiles').html() + '<option value="' + profileObj.accountId + '">'+ profileObj.name + '</option>');
+				console.log(profileObj);
+			}
+			
+			$('#profiles').change(function() {
+				var option = $(this).find('option:selected').val();
+				$('#views-container').html('<select id="views" class="form-control"><option>Loading views...</option></select>');
+				$.ajax({
+					url: '/views',
+					data: {'dprofile':profileObj.accountId,'wp':profileObj.id},
+					type: 'GET',
+					success: [generateViewDropdown]
+				});
+			});			
+		}
+
+
+generateViewDropdown = function(result) {
+			var html = '';
+			$('#views').html('<option>Choose a View</option>');
+			for (var i=0; i < result.results.items.length; i++) {
+				var viewObj = result.results.items[i];
+
+				$('#views').html($('#views').html() + '<option value="' + viewObj.id + '">' + viewObj.name + '</option>');
+      }
+	 }
+
+$(function() {
+
+    var start = moment().subtract(29, 'days');
+    var end = moment();
+
+    function cb(start, end) {
+        $('#reportrange span').html(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'));
+         var startd = start.format('YYYY-MM-DD');
+         var endd = end.format('YYYY-MM-DD');
+    }
+
+    $('#reportrange').daterangepicker({
+        startDate: start,
+        endDate: end,
+        ranges: {
+           'Today': [moment(), moment()],
+           'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+           'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+           'This Month': [moment().startOf('month'), moment().endOf('month')],
+           'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        }
+    }, cb);
+
+    cb(start, end);
+    
+});
+
+		
+generateScoresTable = function(result) {
+			var html = '<table id="scores-table"><tr><th>Page</th><th>Score</th></tr>';
+			var parsed=JSON.parse(result.results);
+			//html +='<p>'+parsed.length+'</p>';
+			for (var i = 0; i < parsed.length; i++) {
+				var scoreObj = parsed[i];
+				html += '<tr><td>' + scoreObj.pageTitle + '</td><td>' + scoreObj['One Metric Score'] + '</td></tr>';
+			}
+			html+= '</table>';
+			$('#scores-container').html(html);
+		}
+
+
+function benchmark(){
+
+
+	var bstartd = moment(startd);
+                bstartd.add(-90,'days');
+              bstartd.format("YYYY-MM-DD");
+
+	var bendd = moment(endd);
+                bendd.add(-1,'days');
+                bendd.format("YYYY-MM-DD");
+}
+
+function runscore(result) {
+ 
+var html = '';
+				var viewid=document.getElementById("views").value;
+				var dateRange = document.getElementById("rangeValue").innerHTML;
+                var split = dateRange.split(" - ");
+                var startd = split[0].trim();
+                var endd = split[1].trim();
+             	
+				var bstartd = moment(startd);
+                bstartd.add(-90,'days');
+              	bstartd.format("YYYY-MM-DD");
+              	console.log(bstartd);
+              	var bs=bstartd.format("YYYY-MM-DD");
+              	console.log(bs);
+
+				var bendd = moment(endd);
+                bendd.add(-1,'days');
+                bendd.format("YYYY-MM-DD");
+                var be=bendd.format("YYYY-MM-DD");
+                console.log(be);
+                console.log(bendd);
+
+				$('#scores-container').html('Loading scores...');
+				$.ajax({
+					url: '/prog',
+					data: {'profileid':viewid,'bstartd':bs,'bendd':be,'startd':startd,'endd':endd},
+					type: 'GET',
+					success: [generateScoresTable,generateD2graph]
+				});	
+
+}
+
+
+generateD2graph = function (result){
+    
+var data=JSON.parse(result.results);
+var margin = {top: 20, right: 20, bottom: 30, left: 10},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+    var barPadding=2;
+
+var x = d3.scale.ordinal()
+    .rangeRoundBands([0, width], .1);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .ticks(7,"");
+
+x.domain(data.map(function(d) { return d.pageTitle; }));
+y.domain([0, d3.max(data, function(d) { return d['One Metric Score']; })]);
+
+var svg = d3.select("#d3-container").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+svg.append("g")
+  .attr("class", "x axis")
+     .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  svg.append("g")
+    .attr("class", "y axis")
+    .call(yAxis)
+    .append("text") // just for the title (ticks are automatic)
+    .attr("transform", "rotate(-90)") // rotate the text!
+    .attr("y", 6)
+    .attr("dy", ".71em")
+    .style("text-anchor", "end")
+    .text("One Metric Score");
+
+
+  svg.selectAll(".bar")
+      .data(data)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return x(d.pageTitle); })
+      .attr("width", x.rangeBand())
+       .transition().delay(function (d,i){ return i * 600;})
+    .duration(800)
+      .attr("y", function(d) { return y(d['One Metric Score']); })
+      .attr("height", function(d) { return height - y(d['One Metric Score']); });
+
+
+function type(d) {
+  d['One Metric Score'] = +d['One Metric Score'];
+  return d;
+   }
+
+}
+
+
+
+</script>
+  <body>
+  	<div class="container">
+  		<h3>Clients</h3>
+  		<div id="clients-container" >
+  			<select id="clients"><option>Loading clients...</option></select>
+      <div>
+  	  </br>
+  		<div id="profiles-container"></div>
+  	  </br>
+  		<div id="views-container"></div>
+  	  </br>
+      <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 0; border: 1px solid #ccc">
+       <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+      <span id="rangeValue"></span> <b class="caret"></b> </div>
+       <span></span> <b class="caret"></b>
+       <input type="button" class="button" name="button" value="Calculate Scores" onClick="runscore()">
+       </br>
+       <div id="scores-container"></div>
+		   <div id="d3-container"></div>
+	     </br>
+
+       </br>
+       </br>
+      </br>
+      </br>
+	</div>
+</div>
+
+       <div id="graph"></div>
+        <div  class="graph"id="graph2"></div>
+
+  </body>
+</html>
+     

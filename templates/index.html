@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Clients</title>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	<script>window.jQuery || document.write('<script src="{{url_for('static', filename='jquery.js') }}">\x3C/script>')</script>
+	<script type=text/javascript> $SCRIPT_ROOT = {{ request.script_root|tojson|safe }}; </script>
+		
+	<script type="text/javascript">
+		$(document).ready(function() {
+			loadClients();
+		})
+		
+		loadClients = function(){
+			$.ajax({
+				type: 'GET',
+				url: '/clients',
+				success: generateClientDropdown
+			})
+		}
+		
+		generateClientDropdown = function(result) {
+			var html = '';
+			$('#clients').html('<option>Choose a client<option>');
+			for (var i=0; i < result.results.items.length; i++) {
+				var clientObj = result.results.items[i];
+				$('#clients').html($('#clients').html() + '<option value="' + clientObj.id + '">' + clientObj.name + '</option>');
+			}
+			
+			$('#clients').change(function() {
+				var option = $(this).find('option:selected').val();
+				$('#profiles-container').html('<select id="profiles" class="form-control"><option>Loading profiles...</option></select>');
+				$.ajax({
+					type: 'GET',
+					url: '/profile',
+					data:{'clientid':option},
+					success: generateProfileDropdown
+				});
+			});
+		}
+		
+		generateProfileDropdown = function(result) {
+			var html = '';
+			$('#profiles').html('<option>Choose a profile</option>');
+			for (var i=0; i < result.results.items.length; i++) {
+				var profileObj = result.results.items[i];
+				$('#profiles').html($('#profiles').html() + '<option value="' + profileObj.defaultProfileId + '">' + profileObj.name + '</option>');
+			}
+			
+			$('#profiles').change(function() {
+				var option = $(this).find('option:selected').val();
+				$('#scores-container').html('<select id="scores" class="form-control"><option>Loading scores...</option></select>');
+				$.ajax({
+					url: '/prog',
+					data: {'profileid':option},
+					type: 'GET',
+					success: generateScoresTable
+				});
+			});			
+		}
+
+
+		/*generateViewDropdown = function(result) {
+			var html = '';
+			$('#views').html('<option>Choose a View</option>');
+			for (var i=0; i < result.results.items.length; i++) {
+				var viewObj = result.results.items[i];
+				$('#views').html($('#views').html() + '<option value="' + viewObj.defaultProfileId + '">' + viewObj.name + '</option>');
+			}
+			
+			$('#views').change(function() {
+				var option = $(this).find('option:selected').val();
+				$('#scores-container').html('Loading scores...');
+				$.ajax({
+					url: '/prog',
+					data: {'profileid':option},
+					type: 'GET',
+					success: generateScoresTable
+				});
+			});			
+		}*/
+		
+		
+		
+		generateScoresTable = function(result) {
+			var html = '<table id="scores-table"><tr><th>Page</th><th>Score</th></tr>';
+			var parsed=JSON.parse(result.results);
+			//html +='<p>'+parsed.length+'</p>';
+			for (var i = 0; i < parsed.length; i++) {
+				var scoreObj = parsed[i];
+				html += '<tr><td>' + scoreObj.pageTitle + '</td><td>' + scoreObj['One Metric Score'] + '</td></tr>';
+			}
+			html+= '</table>';
+			$('#scores-container').html(html);
+		}
+		
+		</script>
+		<style>
+			div {
+				margin-top: 5px;
+			}
+		</style>
+			
+  </head>
+  <body>
+	<div class="container">
+		<h3>Clients</h3>
+		<div id="clients-container" >
+			<select id="clients"><option>Loading clients...</option></select>
+		</div>
+		<div id="profiles-container"></div>
+		<!--<div id="views-container"></div> -->
+		<div id="scores-container"></div>
+	</div>
+  </body>
+</html>

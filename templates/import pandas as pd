@@ -1,0 +1,107 @@
+import pandas as pd
+import statsmodels.api as sm
+import numpy as np
+import matplotlib.pyplot as plt
+import statsmodels.formula.api as smf
+import warnings
+from apiclient.discovery import build
+from oauth2client.client import flow_from_clientsecrets
+from oauth2client.file import Storage
+from oauth2client import tools
+from google2pandas import *
+from pandas.io.json import json_normalize
+from datetime import datetime, date
+from sklearn.linear_model import LinearRegression
+from pylab import rcParams
+import httplib2
+import argparse
+import flask
+#get_ipython().magic(u'matplotlib inline')
+from google2pandas import *
+
+
+conn = GoogleAnalyticsQuery(secrets='./ga-creds/client_secrets.json', token_file_name='./ga-creds/analytics.dat')
+#s=request.args.get('profileid')
+#print "head"
+#startdate=request.args.get('startd')
+#enddate=request.args.get('endd')
+#print startdate
+#print enddate
+#sn=datetime.strptime('%Y-%m-%d')
+#en=datetime.strptime('%Y-%m-%d')
+#enddate=request.args.get('endd')
+query = {
+'ids'           : '1215574',
+'metrics'       : 'ga:sessions,ga:pageviews,ga:bounceRate,ga:uniquePageviews,ga:avgTimeOnPage,ga:users',
+'dimensions'    : ['ga:pageTitle,ga:pagePath'],
+'start_date'    : '2015-04-01',
+'end_date'	   :'2015-06-30',
+'filters'    :'ga:sessions>50'
+
+}
+
+df, metadata = conn.execute_query(**query)
+
+savg = round(np.mean(df['sessions']))
+pavg = round(np.mean(df['pageviews']))
+bravg = round(np.mean(df['bounceRate'].astype(float)))
+upavg = round(np.mean(df['uniquePageviews']))
+topavg = round(np.mean(df['avgTimeOnPage'].astype(float)))
+uavg = round(np.mean(df['users']))
+
+#print "Average of Sessions:", savg
+#print "Average of pageviews:", pavg
+#print "Average of Unique Pageviews:", upavg
+#print "Average of Users:", uavg
+#print "Average of Time on Page:", topavg
+#print "Average of Bounce Rate:", bravg
+
+
+#3) Calling the data of different timeline	
+
+
+query = {
+'ids'           : '1215574',
+'metrics'       : 'ga:sessions,ga:pageviews,ga:bounceRate,ga:uniquePageviews,ga:avgTimeOnPage,ga:users',
+'dimensions'    : ['ga:pageTitle,ga:pagePath'],
+'start_date'    : '2015-07-01',
+'filters'    :'ga:sessions>50',
+     'end_date':'2016-07-01'
+    }
+
+dt, metadata = conn.execute_query(**query)
+#print dt
+
+
+#data1=dt
+#4) Adding new columns that would calculate the performance against expecations
+
+dt['S.Avg']=(dt['sessions']/savg)*100
+dt['P.Avg']=(dt['pageviews']/pavg)*100
+dt['UP.Avg']=(dt['uniquePageviews']/upavg)*100
+dt['US.Avg']=(dt['users']/uavg)*100
+dt['TOP.Avg']=(dt['avgTimeOnPage'].astype(float)/topavg)*100
+dt['BR.Avg']=(dt['bounceRate'].astype(float)/bravg)*100
+
+
+#5) Sorting the data
+
+#data3=data1[['pageTitle','S.Avg','P.Avg','UP.Avg','US.Avg','TOP.Avg','BR.Avg']]
+
+#6) Adding the X value
+
+dt['X.avg']=(dt[['S.Avg','P.Avg','UP.Avg','US.Avg','TOP.Avg','BR.Avg']].mean(axis=1))/100
+#print data3
+
+#7) Adding the One Metric Score
+
+dt['One Metric Score']=(27*np.log(dt['X.avg']))+50
+#print data3
+
+#8) Sorting the data
+
+data4=dt[['pageTitle','One Metric Score']]
+
+sa=data4.sort(['One Metric Score'],ascending=False)
+y=sa.head(10)
+z=y.reset_index().to_json(orient='records')
