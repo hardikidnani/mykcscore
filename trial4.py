@@ -27,7 +27,7 @@ import flask
 #get_ipython().magic(u'matplotlib inline')
 from google2pandas import *
 from flask import Flask
-from flask_debugtoolbar import DebugToolbarExtension
+#from flask_debugtoolbar import DebugToolbarExtension
 #import flask_debugtoolbar
 #from flask_debugtoolbar_lineprofilerpanel.profile import line_profile
 
@@ -40,8 +40,8 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 app=Flask(__name__) #insantiate
 
-import flask_debugtoolbar
-from flask_debugtoolbar_lineprofilerpanel.profile import line_profile
+#import flask_debugtoolbar
+#from flask_debugtoolbar_lineprofilerpanel.profile import line_profile
 #app.debug = True
 # set a 'SECRET_KEY' to enable the Flask session cookies
 app.config['SECRET_KEY'] = 'kingcontent'
@@ -62,7 +62,7 @@ def home():
  #   return render_template("about.html")
 
 @app.route('/prog',methods=['GET','POST'])
-@line_profile
+#@line_profile
 def data():
 	conn = GoogleAnalyticsQuery(secrets='./ga-creds/client_secrets.json', token_file_name='./ga-creds/analytics.dat')
 	s=request.args.get('profileid')
@@ -241,19 +241,6 @@ if __name__=="__main__":
     #app.run(port=8005,debug=True)
     #app.run(threaded=True)
     app.debug= True
-    app.config['DEBUG_TB_PANELS'] = [
-    'flask_debugtoolbar.panels.versions.VersionDebugPanel',
-    'flask_debugtoolbar.panels.timer.TimerDebugPanel',
-    'flask_debugtoolbar.panels.headers.HeaderDebugPanel',
-    'flask_debugtoolbar.panels.request_vars.RequestVarsDebugPanel',
-    'flask_debugtoolbar.panels.template.TemplateDebugPanel',
-    #'flask_debugtoolbar.panels.sqlalchemy.SQLAlchemyDebugPanel',
-    'flask_debugtoolbar.panels.logger.LoggingPanel',
-    'flask_debugtoolbar.panels.profiler.ProfilerDebugPanel',
-    # Add the line profiling
-    'flask_debugtoolbar_lineprofilerpanel.panels.LineProfilerPanel'
-    ]
-    toolbar = flask_debugtoolbar.DebugToolbarExtension(app)
-    
+   
     app.run()
 
