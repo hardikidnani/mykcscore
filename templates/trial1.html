@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="{{ url_for('static', filename='gridstack.css') }}">
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/latest/css/bootstrap.css" /> 
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/roboto.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/material-design.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/small-n-flat.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/c3.min.css')}}">
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='modernizr.js') }}"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.1.5/angular.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.3.9/d3.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/nvd3/1.1.13-beta/nv.d3.min.js"></script>
+<script src="http://cmaurer.github.io/angularjs-nvd3-directives/lib/angularjs-nvd3-directives/dist/angularjs-nvd3-directives.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.5.0/lodash.min.js"></script>
+<script src="https://cdn.jsdelivr.net/lodash/4.15.0/lodash.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/gridstack.js/0.2.6/gridstack.min.js"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='gridstack.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='gridstack.jQueryUI.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='guage.js') }}"></script>
+<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.min.js"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='raphael-2.1.4.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='justgage.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='velocity.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='velocity.ui.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='main.js') }}"></script>
+
+<script type=text/javascript> $SCRIPT_ROOT = {{ request.script_root|tojson|safe }}; </script>
+<body>
+
+  <div id="mysidemenu" class="side-menu">
+     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <center>One Metric Score</center>
+   </br>
+    <div align="center" id="clients-container">
+      <select id="clients" class="form-control"><option>Loading clients...</option></select>
+    </div></br>
+    <div align="center" id="profiles-container"></div></br>
+    <div align="center" id="views-container"></div><br>
+    <div id="reportrange" class="pull-left" style="background: #fff; cursor: pointer; padding: 2px; border: 1px solid #ccc; margin-left: 35px;">
+      <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+       <span id="rangeValue"></span> <b class="caret"></b> </div>
+    <div id="btn">
+       <input type="button" id="runscore" class="button" name="button" value="Calculate Scores" onClick="runscore();setVisibility('chart', 'none');setVisibility('d3-container', 'none');setVisibility('kcsimg', 'inline');setVisibility('chart2', 'none');setVisibility('gdetails', 'none');setVisibility('linkks', 'none');closeNav();" style="margin-top: 25px; padding: 4px; margin-left: -30px;">
+    </div></br></br>
+</div>
+  <div style="background-color:black;padding:3px;width:100%; position: fixed;" >
+    <img alt="Communique" src="http://app.communique.biz/assets/logos/communique-logo-top.png"></img>
+  </div>
+</br>
+</br>
+</br>
+
+<div id="main">
+                <div class="w3-container" style="position : fixed; background-color: rgba(6, 5, 5, 0.18);">
+                  <h2>King Content Score</h2>
+                  <p>The One Metric is a single score that tells you how successful a piece of content was by comparing it to the average performance of the content that came before it.</br>
+                  <span style="font-size:20px;cursor:pointer; position: fixed;" onclick="openNav()">&#9776; Select Client</span>
+                </br>
+                  </p>
+                  <hr>
+                </div>
+  </br>
+  </br>
+
+   <div id="graphs" style="width:100%;margin-top:200px;">
+        <div id="d3-container" class="left"></div>  
+        <div id="kcsimg" class="right"><img src="{{ url_for('static', filename='KingContentScore.png')}}" style=" width: 650px;margin-top: -40px;">
+        </div>           
+   </div>
+  </br>
+</br>
+</br>
+
+<div id="hide" style="display:none">
+                        <div id="gdetails" class="kcs">
+                                      <div class="container-fluid">
+                                      <div class="row">
+                                          <div class="col-sm-6">
+                                          <div class="panel panel-default">
+                                            <div class="panel-heading">Performance Vs Expectations</div>
+                                                 <div class="panel-body" style="width:700px; max-width:700px; position: relative;">
+                                                      <div id="chart" style="width:700px; max-width:700px; position: relative;">
+                                                      <svg></svg>
+                                                    </div>
+                                                  </div>
+                                          </div>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                          <div class="panel panel-default">
+                                            <div class="panel-heading">% Increase and decrease of Metrics</div>
+                                                 <div class="panel-body" style="width:700px; max-width:700px; position: relative;">
+                                                      <div id="chart2" style="width:700px; max-width:700px; position: relative;">
+                                                      <svg></svg>
+                                                    </div>
+                                                  </div>
+                                          </div>
+                                        </div>
+                                        </div>
+                                      </div>
+
+                                      <div class="container-fluid">
+                                          <div class="row">
+                                                      <div class="col-sm-6">
+                                                      <div class="panel panel-default">
+                                                        <div class="panel-heading">Bounce Rate</div>
+                                                             <div class="panel-body" >
+                                                              
+                                                                  <div class="row">
+                                                                      <div class="col-sm-6">
+                                                                          <div class="panel panel-default">
+                                                                              <div class="panel-heading">Performance</div>
+                                                                                  <div class="panel-body">
+                                                                                  <div id="g2" class="gauge"></div>
+                                                                                  </div>
+                                                                              </div>
+                                                                           </div>
+
+                                                                      <div class="col-sm-6">
+                                                                          <div class="panel panel-default">
+                                                                                <div class="panel-heading">Expectation</div>
+                                                                                  <div class="panel-body">
+                                                                                    <div id="g3" class="gauge"></div>
+                                                                                    </div>
+                                                                                  </div>
+                                                                            </div>
+                                                                      </div>
+                                                                    </div>
+                                                              </div>
+                                                      </div>
+                                                      <div class="col-sm-6">
+                                                        <div class="panel panel-default">
+                                                          <div class="panel-heading">Time on Page</div>
+                                                               <div class="panel-body">
+                                                             
+                                                                    <div class="row">
+                                                                        <div class="col-sm-6">
+                                                                            <div class="panel panel-default">
+                                                                                <div class="panel-heading">Performance</div>
+                                                                                    <div class="panel-body">
+                                                                                    <div id="g1" class="gauge"></div>
+                                                                                      </div>
+                                                                                    </div>
+                                                                             </div>
+                                                                        <div class="col-sm-6">
+                                                                            <div class="panel panel-default">
+                                                                                  <div class="panel-heading">Expectation</div>
+                                                                                    <div class="panel-body">
+                                                                                    <div id="g4" class="gauge"></div>
+                                                                                    </div>
+                                                                              </div>
+                                                                        </div>
+                                                                      </div>
+                                                                </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                        </div>
+                        </div>
+    
+</br>
+
+<!--<a href="#" class="show_hide" id="plus">Check out CQ data</a>-->
+                                    <div id="linkks">
+                                    <div id= "cq"> </br><div id="g4" class="gauge"></br> <p> Here goes the data of CQ</p>
+                                 </div></div>
+
+                                    <a href="#top" id="bottom"  >Click to scroll up</a>
+                                    <button align="center">View More</button>
+                                     </div>
+                    </div>
+</div>
+
+</body>
+
+
+
+
+<style type="text/css">
+
+.left{
+  overflow: hidden;
+}
+.right{
+  float: right;
+}
+.center {
+    margin: auto;
+    width: 60%;
+    margin-left: 45%;
+    padding: 10px;
+}
+.show_hide {
+    display:none;
+}
+.cq{
+
+  display: none;
+}
+div.absolute {
+    position: relative;
+    bottom: 70px;
+}
+
+
+.side-body {
+  margin-left: 310px;
+}
+
+.side-menu {
+  position: fixed;
+  width: 300px;
+  height: 100%;
+  background-color: #f8f8f8;
+  border-right: 1px solid #e7e7e7;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 60px;
+}
+
+@media (max-width: 768px) {
+  .side-menu {
+    position: relative;
+    width: 100%;
+    height: 0;
+    border-right: 0;
+    border-bottom: 1px solid #e7e7e7;
+  }
+  .side-menu .brand-name-wrapper .navbar-brand {
+    display: inline-block;
+  }
+
+}
+  .side-menu a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s
+}
+
+.side-menu a:hover, .offcanvas a:focus{
+    color: #f1f1f1;
+}
+
+.side-menu .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+#main {
+    transition: margin-left .5s;
+    padding: 16px;
+}
+
+@media screen and (max-height: 450px) {
+  .side-menu {padding-top: 15px;}
+  .side-menu a {font-size: 18px;}
+}
+  /* Slide in animation */
+ .box {
+      float: left;
+      width: 50%;
+      height: 50%;
+      box-sizing: border-box;
+    }
+
+ .gauge {
+      width: 320px;
+      height: 240px;
+    }
+.row-fluid {
+  height: 100%;
+}
+
+.resizable {
+  top: 10px;
+  left: 10px;
+  width: 525px;
+  height: 300px;
+  padding: 0em 0em 4em;
+  margin: 0;
+  font-size: 10px;
+  background: #F3F3F3;
+}
+
+.resizable h3 {
+  text-align: center;
+  margin: 0 0 10px;
+  font-size: 13px;
+  height: 16px;
+  border: none;
+}
+
+.ui-resizable-handle.ui-resizable-se.ui-icon.ui-icon-gripsmall-diagonal-se {
+  z-index: 0 !important;
+}
+
+.visualization {
+  height: 100%;
+  min-height: 100%;
+}
+
+.visualization .item {
+  height: 100%;
+}
+
+
+ .grid-stack {
+            background: lightgoldenrodyellow;
+        }
+        .grid-stack-item-content {
+            color: #2c3e50;
+            text-align: center;
+            background-color: #18bc9c;
+        }
+.container {
+    width: 500px;
+    float: left;
+}
+.panel-primary > .panel-heading{
+
+
+  background-color: #333;
+  border-color: #333;
+}
+
+.panel-primary{
+
+  border-color: #080808;
+}
+.grright
+{
+   float: right;
+   margin-right: 800px;
+
+}
+.grleft
+{
+
+  float: left;
+  margin-left: -300px;
+  margin-top: 20px;
+}
+
+.right2
+{
+
+
+  float: right;
+  margin-right: 260px;
+}
+
+#btn{
+
+  width: 100%;
+  height: 30px;
+}
+
+#runscore{
+  position: relative;
+  left: 35%;
+}
+
+.left {
+    float: left;
+    margin-left: 20px;
+}
+.right {
+    float: right;
+    margin-right: 20px;
+}
+#container {
+ 
+  float: left;
+}
+
+.form-control
+{
+  width: 100%;
+}
+.pull-left {
+    float: left !important;
+    margin-left: 50px;
+}
+
+.pull-right {
+    float: right !important;
+    margin-right: 30px;
+    margin-top: 18px;
+}
+
+#scores-table{
+
+      table-layout: auto;
+     /* width: 100%;*/
+     border-collapse: collapse;
+
+}
+ tr:nth-of-type(odd) { 
+    background: #eee; 
+  }
+  th { 
+    background: #333; 
+    color: white; 
+    font-weight: bold; 
+    cursor: s-resize;
+    background-repeat: no-repeat;
+        background-position: 3% center;
+  }
+  td, th { 
+    padding: 6px; 
+    border: 1px solid #ccc; 
+    text-align: left; 
+  }
+  
+  th.des:after {
+      content: "\21E9";
+    }
+    
+    th.aes:after {
+      content: "\21E7";
+    }
+
+#chart svg
+{
+
+  .text{
+
+    font: 8px sans-serif;
+  }
+}
+
+#chart2 svg{
+
+.text {
+  fill: black;
+  font: 10px sans-serif;
+  font-weight: bold;
+  text-align: center;
+}
+
+
+}
+#chart4 svg {
+  
+  text.middle {
+    font-family: Lato;
+    font-weight: 300;
+    font-size: 24px;
+  }
+  
+  .nvd3.nv-pie .nv-pieLabels text {
+    font-family: Lato;
+    font-size: 18px;
+    font-weight: 300;
+    fill: #fff !important;
+  }
+}
+
+#everything{
+  width:600px;
+  margin:20px;
+}
+
+#d3-container{
+
+  display: none;
+}
+#chart{
+  width:700px;
+  height:400px;
+  display: none;
+}
+.bar{
+  fill: #fe9900;
+  fill-opacity: .9;
+
+}
+text.label{
+  fill: #777777;
+  color: #777777;
+  font-size: 20px;
+  font-weight: bold;
+}
+text.category{
+  fill: #666666;
+  font-size: 14px;
+}
+
+.nvd3.nv-pie.nv-chart-donut2 .nv-pie-title {
+            fill: rgba(70, 107, 168, 0.78);
+        }
+
+.nvd3.nv-pie.nv-chart-donut1 .nv-pie-title {
+            opacity: 0.4;
+            fill: rgba(224, 116, 76, 0.91);
+        }
+
+#cq{
+
+  display: none;
+}
+
+
+</style>
+	<title> Client Scoring </title>
+</head>
+<script type="text/javascript">
+
+
+
+var g1=null;
+var g2=null;
+var g3=null;
+var g4=null;
+
+
+  function scrolld(){
+                                  $('html, body').animate({
+                                  scrollTop: $("#gdetails").offset().top
+                                    }, 500);
+                                  }
+
+function ButtonText() {
+    $("button").text(function(i, v){
+               return v === 'CQ Data' ? 'Call graphs' : 'CQ Data'
+            })
+}
+
+ButtonText();
+$("button").click(function () {
+    $("#gdetails").animate({width: 'toggle'},
+    {
+    duration: 1500,
+    specialEasing: {
+      width: "linear"
+    }}
+    );
+
+    $("#cq").animate({width: 'toggle'},{
+    duration: 1500,
+    specialEasing: {
+      width: "linear"
+    }});
+    ButtonText();
+});
+
+
+function openNav() {
+    document.getElementById("mysidemenu").style.width = "250px";
+   // document.getElementById("main").style.marginLeft = "250px";
+    //document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
+}
+
+function closeNav() {
+    document.getElementById("mysidemenu").style.width = "0";
+    //document.getElementById("main").style.marginLeft= "0";
+    //document.body.style.backgroundColor = "white";
+}
+
+function showDiv() {
+   document.getElementById('hide').style.display = "block";
+}
+
+
+function setVisibility(id, visibility) {
+document.getElementById(id).style.display = visibility;
+}
+
+
+window.onload=function(){
+  document.getElementById("runscore").style.display='none';
+  document.getElementById("reportrange").style.display='none';
+  document.getElementById("kcsimg").style.display='none';
+
+}
+$(document).ready(function() {
+			loadClients();
+		})
+		
+		loadClients = function(){
+			$.ajax({
+				type: 'GET',
+				url: '/clients',
+				success: generateClientDropdown
+			})
+		}
+		
+generateClientDropdown = function(result) {
+		var html = '';
+			$('#clients').html('<option>Choose a client<option>');
+			for (var i=0; i < result.results.items.length; i++) {
+				var clientObj = result.results.items[i];
+				$('#clients').html($('#clients').html() + '<option value="' + clientObj.id + '">' + clientObj.name + '</option>');
+			}
+			
+			$('#clients').change(function() {
+				var option = $(this).find('option:selected').val();
+				$('#profiles-container').html('<select id="profiles" class="form-control"><option>Loading profiles...</option></select>');
+				$.ajax({
+					type: 'GET',
+					url: '/profile',
+					data:{'clientid':option},
+					success: [generateProfileDropdown]
+				});
+			});
+		}
+		
+generateProfileDropdown = function(result) {
+			var html = '';
+			$('#profiles').html('<option>Choose a profile</option>');
+			for (var i=0; i < result.results.items.length; i++) {
+				var profileObj = result.results.items[i];
+				$('#profiles').html($('#profiles').html() + '<option value="' + profileObj.accountId + '">'+ profileObj.name + '</option>');
+				//console.log(profileObj);
+			}
+			
+			$('#profiles').change(function() {
+				var option = $(this).find('option:selected').val();
+				$('#views-container').html('<select id="views" class="form-control"><option>Loading views...</option></select>');
+				$.ajax({
+					url: '/views',
+					data: {'dprofile':profileObj.accountId,'wp':profileObj.id},
+					type: 'GET',
+					success: [generateViewDropdown]
+				});
+			});			
+		}
+
+
+generateViewDropdown = function(result) {
+			var html = '';
+			$('#views').html('<option>Choose a View</option>');
+			for (var i=0; i < result.results.items.length; i++) {
+				var viewObj = result.results.items[i];
+
+				$('#views').html($('#views').html() + '<option value="' + viewObj.id + '">' + viewObj.name + '</option>');
+      }
+
+      $('#views').change(function(){
+        //console.log("trial");
+        $("#runscore").show();
+        $("#reportrange").show();
+      });
+
+
+	 }
+
+$(function() {
+
+    var start = moment().subtract(29, 'days');
+    var end = moment();
+
+    function cb(start, end) {
+        $('#reportrange span').html(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'));
+         var startd = start.format('YYYY-MM-DD');
+         var endd = end.format('YYYY-MM-DD');
+    }
+
+    $('#reportrange').daterangepicker({
+        startDate: start,
+        endDate: end,
+        ranges: {
+           'Today': [moment(), moment()],
+           'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+           'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+           'This Month': [moment().startOf('month'), moment().endOf('month')],
+           'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        }
+    }, cb);
+
+    cb(start, end);
+    
+});
+
+		
+generateScoresTable = function(result) {
+			var html = '<table id="scores-table"><br><tr><th>Page</th><th>Score</th></tr>';
+			var parsed=JSON.parse(result.results);
+			//html +='<p>'+parsed.length+'</p>';
+			for (var i = 0; i < parsed.length; i++) {
+				var scoreObj = parsed[i];
+				html += '<tr><td>' + scoreObj.pageTitle + '</td><td>' + scoreObj.oms + '</td>' ;//+ scoreObj.sessions + '</td><td>' + scoreObj['B.Sessions'] + '</td><td>' + scoreObj.users + '</td><td>' +  scoreObj['B.Users'] +'</td></tr>';
+			}
+			html+= '</table>';
+			$('#scores-container').html(html);
+		}
+
+
+function benchmark(){
+
+
+	var bstartd = moment(startd);
+                bstartd.add(-90,'days');
+              bstartd.format("YYYY-MM-DD");
+
+	var bendd = moment(endd);
+                bendd.add(-1,'days');
+                bendd.format("YYYY-MM-DD");
+}
+
+function runscore(result) {
+ 
+var html = '';
+				var viewid=document.getElementById("views").value;
+        //alert("press");
+       // d3.select("#chart").selectAll("svg").remove();
+       // var data=JSON.parse(result.results);
+        //console.log(viewid);
+				var dateRange = document.getElementById("rangeValue").innerHTML;
+                var split = dateRange.split(" - ");
+                var startd = split[0].trim();
+                var endd = split[1].trim();
+             	
+				var bstartd = moment(startd);
+                bstartd.add(-90,'days');
+              	bstartd.format("YYYY-MM-DD");
+              	//console.log(bstartd);
+              	var bs=bstartd.format("YYYY-MM-DD");
+              	//console.log(bs);
+
+				var bendd = moment(endd);
+                bendd.add(-1,'days');
+                bendd.format("YYYY-MM-DD");
+                var be=bendd.format("YYYY-MM-DD");
+                //console.log(be);
+                //console.log(bendd);
+          var proc = new Date().getTime();
+				$('#scores-container').html(' ');
+				$.ajax({
+					url: '/prog',
+					data: {'profileid':viewid,'bstartd':bs,'bendd':be,'startd':startd,'endd':endd},
+					type: 'GET',
+					success: [generated2graph]
+           
+
+				});	
+
+}
+
+var proc = new Date().getTime();
+function AJAXSuccessFunction() {
+    console.log(new Date().getTime() - proc);
+}
+
+
+
+
+generated2graph=function(result){
+
+  var setup = function(targetID){
+  
+  //Set size of svg element and chart
+  setVisibility('d3-container', 'inline');
+  var margin = {top: 0, right: 0, bottom: 0, left: 0},
+    width = 700 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom,
+    categoryIndent = 4*15 + 5,
+    defaultBarWidth = 2000;
+
+
+  //Set up scales
+
+  var x = d3.scale.linear()
+    .domain([0,defaultBarWidth])
+    .range([0,width]);
+  var y = d3.scale.ordinal()
+    .rangeRoundBands([0, height], 0.1, 0);
+
+  //Create SVG element
+  d3.select(targetID).selectAll("svg").remove()
+  var svg = d3.select(targetID).append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  
+  //Package and export settings
+  var settings = {
+    margin:margin, width:width, height:height, categoryIndent:categoryIndent,
+    svg:svg, x:x, y:y
+  }
+  return settings;
+}
+
+var redrawChart = function(targetID, newdata) {
+
+  //Import settings
+  var margin=settings.margin, width=settings.width, height=settings.height, categoryIndent=settings.categoryIndent, 
+  svg=settings.svg, x=settings.x, y=settings.y;
+
+  //Reset domains
+  y.domain(newdata.sort(function(a,b){
+    return b.oms - a.oms;
+  })
+    .map(function(d) { return d.pageTitle; }));
+  var barmax = d3.max(newdata, function(e) {
+    return e.oms;
+  });
+  x.domain([0,barmax]);
+
+
+
+
+  /////////
+  //ENTER//
+  /////////
+
+  //Bind new data to chart rows 
+
+  //Create chart row and move to below the bottom of the chart
+  var chartRow = svg.selectAll("g.chartRow")
+    .data(newdata, function(d){ return d.pageTitle});
+  var newRow = chartRow
+    .enter()
+    .append("g")
+    .attr("class", "chartRow")
+    .attr("transform", "translate(0," + height + margin.top + margin.bottom + ")")
+    .on("click",function(d){
+
+                                 //window.scrollBy(0, 50);
+                                 //var x=$(window).height();   // returns height of browser viewport
+                                  //var y=$(document).height(); // returns height of HTML document
+                                  //var z=$(window).width();
+                                   // $("body").animate({"scrollTop": window.scrollY+(z-30)}, 1000);
+                                   
+                                   // returns width of browser viewport
+                                  //$(document).width(); 
+                                    //                       console.log("height" + x);
+                                      //                     console.log(y);
+                                        //                   console.log(z);  
+
+                            scrolld();
+                            showDiv();
+                            setVisibility('gdetails', 'inline');
+                            setVisibility('chart', 'inline');
+                            setVisibility('chart2', 'inline');
+                            setVisibility('linkks', 'inline');
+
+                           
+
+                            //d3.select("#chart").selectAll("svg").remove()
+                            data1=d3.select(this);
+                            data1=d;
+
+
+
+
+                            /* var margin = {top: 0, right: 0, bottom: 0, left: 20},
+                            width = 700 - margin.left - margin.right,
+                            height = 400 - margin.top - margin.bottom;*/
+                            //adding Performance Vs Expectations chart
+                            var chart = nv.models.multiBarHorizontalChart() 
+                            .margin({top: 30, right: 10, bottom: 30, left: 140})
+                            .x(function(d) { return d.x })
+                            .valueFormat(d3.format(".0f"))
+                            .y(function(d) { return d.y })
+                            //.yAxis.tickFormat(d3.format(',f'))
+                            .valueFormat(d3.format(".0f"))
+                            .showValues(true)  
+                            .transitionDuration(1500)
+                            .stacked(false)
+                            .showControls(false).tooltips(false);
+
+                           
+
+                              
+                            chart.yAxis.tickFormat(d3.format(',f'));
+
+                             chart.yAxis.tickPadding(3);
+                            chart.xAxis.tickPadding(3);
+                           // console.log("enter");
+                              sessionsincrease=data1.sessions-data1['B.Sessions'];
+                              pageviewsincrease=data1.pageviews-data1['B.PageViews'];
+                              uniquePageviewsincrease=data1.uniquePageviews-data1['B.UniquePVS'];
+                              usersincrease=data1.users-data1['B.Users'];
+                              brincrease=data1.bounceRate-data1['B.BounceRate'];
+                              topincrease=data1.avgTimeOnPage-data1['B.TOP'];
+
+
+                //d3.select("#d3-container").select("svg").remove();
+                //function 
+                             /*d3.select('#chart svg')
+                            .append("text")
+                            .attr("x", width/2)             
+                            .attr("y", 20)
+                            .attr("text-anchor", "middle")  
+                            .style("font-size", "16px"); 
+                            //.text("Performance Vs Benchmark");*/
+
+                          d3.select('#chart svg')
+                           .attr('width',width)
+                            .attr('height',height)
+                            .datum([
+                        {
+                            key: "Performance",
+                            visible: false,
+                            color: "#51A351",
+                        values:
+                              [      
+                                { x : "Sessions", y : data1.sessions},
+                                { x : "Users", y : data1.users },
+                                { x : "Pageviews", y : data1.pageviews},  
+                                { x : "Unique Pageviews", y : data1.uniquePageviews }
+                              ]
+                          },
+                          {
+                            key: "Benchmark",
+                            color: "#BD362F",
+                            visible: true,
+                            values:
+                              [
+                                { x : "Sessions", y : data1['B.Sessions']},
+                                { x : "Users", y : data1['B.Users']},
+                                { x : "Pageviews", y : data1['B.PageViews'] },  
+                                { x : "Unique Pageviews", y : data1['B.UniquePVS']}
+                              ]
+                          },
+                        ]).transition().duration(1500)
+                            .call(chart)
+                           
+
+
+                          
+                           // console.log(((data1.avgTimeOnPage)/60)*10);
+                           // console.log((data1.avgTimeOnPage)/60);
+                           // console.log(((data1.avgTimeOnPage)/60)/10);
+
+                            nv.utils.windowResize(chart.update);
+                             // console.log("exit"); 
+
+
+
+                          nv.addGraph(function() {
+                            var margin = {top: 0, right: 0, bottom: 0, left: 0},
+                            width = 700 - margin.left - margin.right,
+                            height = 400 - margin.top - margin.bottom;
+                          var chart = nv.models.discreteBarChart()
+                          .x(function(d) { return d.label })    //Specify the data accessors.
+                          .y(function(d) { return d.value })
+                          //yAxis.tickFormat(function(d) { return d + "%"; })
+                          .valueFormat(d3.format("0%"))
+                          //.tickFormat(function(d) { return d + "%"; })
+                          .staggerLabels(true)    //Too many bars and not enough room? Try staggering labels.
+                          .tooltips(false)        //Don't show tooltips
+                          .showValues(true)       //...instead, show the bar value right on top of each bar.
+                                              
+                            chart.yAxis.tickPadding(3);
+                            chart.xAxis.tickPadding(3);
+                          //d3.svg.axis().tickFormat(function(d) { return d + "%"; });
+                          //yAxis().tickFormat(function(d) { return d + "%"; });
+
+                          //chart.yAxis.tickFormat(function(d) { return d3.format("0%"); });
+                          //chart.xAxis.tickFormat(function(d) { return d + "%"; });
+                          chart.yAxis.tickFormat(d3.format("0%"));
+
+
+                           
+        
+
+                          d3.select('#chart2 svg')
+                          .attr('width',width)
+                          .attr('height',height)
+                          .datum([{
+                            key: "Increase and Decrease",
+                            values: [
+                              { 
+                                "label" : "Sessions" ,
+                                "value" : sessionsincrease/data1['B.Sessions']
+                              } , 
+                              { 
+                                "label" : "Pageviews" , 
+                                "value" : pageviewsincrease/data1['B.PageViews']
+                              } , 
+                              { 
+                                "label" : "Unique Pageviews" , 
+                                "value" : uniquePageviewsincrease/data1['B.UniquePVS']
+                              } , 
+                              { 
+                                "label" : "Users" , 
+                                "value" : usersincrease/data1['B.Users']
+                              },
+
+                              { 
+                                "label" : "Bounce Rate" , 
+                                "value" : brincrease/data1['B.BounceRate']
+                              },
+
+                                { 
+                                "label" : "Time On Page" , 
+                                "value" : topincrease/data1['B.TOP']
+                              }
+
+
+                              ]
+                          }])
+                          .transition().duration(1500)
+                          .call(chart);
+                         /* .append("text")
+                            .attr("x", width/2)             
+                            .attr("y", 10)
+                            .attr("text-anchor", "middle")  
+                            .style("font-size", "16px") 
+                            .text("% Increase and Decrease of Metrics");*/
+
+                          nv.utils.windowResize(chart.update);
+
+                          return chart;
+                          });
+
+                          
+                          //Regular Pie Chart
+
+                       /*   nv.addGraph(function() {
+                          var margin = {top: 0, right: 0, bottom: 0, left: 0},
+                          width = 500 - margin.left - margin.right,
+                          height = 500 - margin.top - margin.bottom;
+                          var chart = nv.models.pieChart()
+                              .x(function(d) { return d.label })
+                              .y(function(d) { return d.value })
+                              .tooltips(false)
+                              .labelType("value")
+                              .showLabels(true);
+
+                            chart.pie.pieLabelsOutside(false).labelType("percent");
+
+
+                            d3.select("#chart3 svg")
+                                .attr('width',width)
+                                .attr('height',height)
+                                .datum([{"label":"Performance","value":data1.bounceRate},{"label":"Benchmark","value":data1['B.BounceRate']}])
+                                .transition().duration(350)
+                                .call(chart);
+
+                          return chart;
+                        });
+
+
+                          //Donut chart
+                          nv.addGraph(function() {
+                                var margin = {top: 0, right: 0, bottom: 0, left: 0},
+                                width = 500 - margin.left - margin.right,
+                                height = 500 - margin.top - margin.bottom;
+                                var chart = nv.models.pieChart()
+                                .x(function(d) { return d.label })
+                                .y(function(d) { return d.value })
+                                .showLabels(true)     //Display pie labels
+                                .showLegend(false)    // Hide Legend
+                                .labelThreshold(.05)  //Configure the minimum slice size for labels to show up
+                                .labelType("value") //Configure what type of data to show in the label. Can be "key", "value" or "percent"
+                                .tooltips(false)
+                                //.color(d3.scale.category20().range().slice(10))
+                                .donut(true)          //Turn on Donut mode. Makes pie chart look tasty!
+                                .donutRatio(0.35)     //Configure how big you want the donut hole size to be.
+                                  ;
+                                //.titleOffset(-30)
+                                //.title("woot");
+                                //.title("Time on page")
+                                
+                               
+                                //chart.labelType(function(d, i){ return d.label + d.value; })
+
+
+                                    chart.pie
+                                    .startAngle(function(d) { return d.startAngle/2 -Math.PI/2 })
+                                    .endAngle(function(d) { return d.endAngle/2 -Math.PI/2 });
+
+                                    //chart.pie.pieLabelsOutside(false);
+
+
+
+                             function centerText() {
+                                  return function() {
+                                    var svg = d3.select("#chart4 svg");
+
+                                    var donut = svg.selectAll("g.nv-slice").filter(
+                                      function (d, i) {
+                                        return i == 0;
+                                      }
+                                    );
+                                     // Insert first line of text into middle of donut pie chart
+                                      donut.insert("text", "g")
+                                          .text("Time On")
+                                          .attr("class", "middle")
+                                          .attr("text-anchor", "middle")
+                                          .attr("dy", "-.55em")
+                                          .style("fill", "#000");
+                                      // Insert second line of text into middle of donut pie chart
+                                     donut.insert("text", "g")
+                                          .text("Page")
+                                          .attr("class", "middle")
+                                          .attr("text-anchor", "middle")
+                                          .attr("dy", ".85em")
+                                          .style("fill", "#000");
+                                    }
+                                  }
+
+                              d3.select("#chart4 svg")
+                                  .attr('width',width)
+                                  .attr('height',height)
+                                  .datum([{"label":"Performance","value":((data1.avgTimeOnPage)/60).toFixed(2)},{"label":"Benchmark","value":((data1['B.TOP'])/60).toFixed(2)}])
+                                  .transition().duration(300)
+                                  .call(centerText())
+                                  //.call(pieSlice())
+                                  .call(chart)
+                                  ;
+
+                            return chart;
+                          });
+
+                                                      var opts = {
+                              lines: 12, // The number of lines to draw
+                              angle: 0, // The length of each line
+                              lineWidth: 0.11, // The line thickness
+                              pointer: {
+                                length: 0.9, // The radius of the inner circle
+                                strokeWidth: 0.049, // The rotation offset
+                                color: '#000000' // Fill color
+                              },
+                              limitMax: 'false',   // If true, the pointer will not go past the end of the gauge
+                              colorStart: '#6FADCF',   // Colors
+                              colorStop: '#8FC0DA',    // just experiment with them
+                              strokeColor: '#E0E0E0',   // to see which ones work best for you
+                              generateGradient: true
+                            };
+                            var target = document.getElementById('select-1'); // your canvas element
+                            var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
+                            gauge.maxValue = 5; // set max gauge value
+                            gauge.animationSpeed = 128; // set animation speed (32 is default value)
+                            gauge.set(data1['B.TOP']); // set actual value
+
+
+
+
+                       
+                            //var cals=0;
+                            //cals=data1.avgTimeOnPage;
+                            //var g1= document.getElementById('g1');
+                            */
+                            if(g1)
+                              g1.refresh(data1.avgTimeOnPage);
+                            else
+                              generate(data1.avgTimeOnPage);
+
+                             if(g2)
+                              g2.refresh(data1.bounceRate);
+                            else
+                              generate2(data1.bounceRate);
+
+                             if(g3)
+                              g3.refresh(data1['B.BounceRate']);
+                            else
+                              generate3(data1['B.BounceRate']);
+
+
+                             if(g4)
+                              g4.refresh(data1['B.TOP']);
+                            else
+                              generate4(data1['B.TOP']);
+
+
+
+                          function generate(gage){
+                   
+                            g1 = new JustGage({
+
+                             id: 'g1',
+                              value: data1.avgTimeOnPage,
+                              min: 0,
+                              max: 300,
+                              pointer: true,
+                              gaugeWidthScale: 0.6,
+                              customSectors: [{
+                                color: '#ff0000',
+                                lo: 50,
+                                hi: 100
+                              }, {
+                                color: '#00ff00',
+                                lo: 0,
+                                hi: 50
+                              }],
+                              counter: true,
+                              refreshAnimationTime: 1000
+
+                  
+                            });
+                          }
+
+                          function generate2(gage){
+
+                                g2 = new JustGage({
+                                id: "g2",
+                                value : data1.bounceRate,
+                                min: 0,
+                                max: 100,
+                                symbol:'%',
+                                decimals: 2,
+                                gaugeWidthScale: 0.6,
+                                customSectors: [{
+                                  color : "#00ff00",
+                                  lo : 0,
+                                  hi : 50
+                                },{
+                                  color : "#ff0000",
+                                  lo : 50,
+                                  hi : 100
+                                }],
+                                counter: true,
+                                refreshAnimationTime: 1000
+                              });
+                          }
+
+                          function generate3(gage){
+
+                                g3 = new JustGage({
+                                id: "g3",
+                                value : data1['B.BounceRate'],
+                                min: 0,
+                                max: 100,
+                                symbol:'%',
+                                decimals: 2,
+                                gaugeWidthScale: 0.6,
+                                customSectors: [{
+                                  color : "#00ff00",
+                                  lo : 0,
+                                  hi : 50
+                                },{
+                                  color : "#ff0000",
+                                  lo : 50,
+                                  hi : 100
+                                }],
+                                counter: true,
+                                refreshAnimationTime: 1000
+                              });
+
+                          }
+
+                          function generate4(gage){
+                   
+                            g4 = new JustGage({
+
+                             id: 'g4',
+                              value: data1['B.TOP'],
+                              min: 0,
+                              max: 300,
+                              pointer: true,
+                              gaugeWidthScale: 0.6,
+                              customSectors: [{
+                                color: '#ff0000',
+                                lo: 50,
+                                hi: 100
+                              }, {
+                                color: '#00ff00',
+                                lo: 0,
+                                hi: 50
+                              }],
+                              counter: true,
+                              refreshAnimationTime: 1000
+
+                  
+                            });
+                          }
+
+                          //generate(data1.avgTimeOnPage);
+
+
+                             
+                            /* document.getElementById('chartRow').addEventListener('click',function(){
+
+                              g1.refresh(data1.avgTimeOnPage);
+                             });*/
+                      
+                                
+
+                                   
+
+
+
+                            var html = '<table id="scores-table"><br><tr><th>Page</th><th>Score</th></tr>';
+      //var parsed=;
+      //html +='<p>'+parsed.length+'</p>';
+      
+        //console.log("inside the table");
+        html += '<tr><td>' + d.pageTitle + '</td><td>' + d.oms + '</td>' ;//+ scoreObj.sessions + '</td><td>' + scoreObj['B.Sessions'] + '</td><td>' + scoreObj.users + '</td><td>' +  scoreObj['B.Users'] +'</td></tr>';
+      
+      html+= '</table>';
+      $('#scores-container').html(html);
+
+    });
+
+    
+              
+
+         var blueScale = d3.scale.linear()
+                    //.domain([d3.min(d.oms), d3.max(d.oms)])
+                    .range(["lightblue", "darkblue"]);
+
+/*var inverseBlue = d3.scale.linear()
+                    .domain([d3.max(d.oms), d3.min(d.oms)])
+                    .range(["lightblue", "darkblue"]);
+
+function contrastingColor(d) {
+  var barColor = d3.rgb(blueScale(d));
+  var color = d3.rgb(inverseBlue(d)); // start with the color from the inverse scale
+  if (isDark(barColor)) return color.brighter(2);
+  else return color.darker(2);
+}
+
+function fill(selection, fillColor) {
+  selection.attr("fill", fillColor);
+  return selection;
+}
+
+// Thanks to tinycolor
+function getBrightness(color) {
+  //http://www.w3.org/TR/AERT#color-contrast
+  var rgb = d3.rgb(color)
+  return (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
+}
+
+// Thanks to tinycolor
+function isDark(color) {
+  return getBrightness(color) < 128;
+}
+
+// Thanks to tinycolor
+function isLight(color) {
+  return !isDark(color);
+} */
+
+
+  //Add rectangles
+  newRow.insert("rect")
+    .attr("class","bar")
+    .attr("x", 0)
+    .attr("opacity",0)
+    .attr("height", y.rangeBand())
+    .attr("width", function(d) { return x(d.oms);}) 
+    //.attr("fill", (d) => blueScale(d.oms));
+    
+   // .style("fill",function (d) {return blueScale(d);});
+
+
+
+  //Add value labels
+  newRow.append("text")
+    .attr("class","label")
+    .attr("y", y.rangeBand()/2)
+    .attr("x",0)
+    .attr("opacity",0)
+    .attr("dy",".35em")
+    .attr("dx","0.5em")
+    .text(function(d){return d.oms;}); 
+  
+  //Add Headlines
+  newRow.append("text")
+    .attr("class","category")
+    .attr("text-overflow","ellipsis")
+    .attr("y", y.rangeBand()/2)
+    .attr("x",categoryIndent)
+    .attr("opacity",0)
+    .attr("dy",".35em")
+    .attr("dx","0.5em")
+    .text(function(d){return d.pageTitle});
+
+
+  //////////
+  //UPDATE//
+  //////////
+  
+  //Update bar widths
+  chartRow.select(".bar").transition()
+    .duration(300)
+    .attr("width", function(d) { return x(d.oms);})
+    .attr("opacity",1);
+
+  //Update data labels
+  chartRow.select(".label").transition()
+    .duration(300)
+    .attr("opacity",1)
+    .tween("text", function(d) { 
+    var i = d3.interpolate(+this.textContent.replace(/\,/g,''), +d.oms);
+    return function(t) {
+      this.textContent = Math.round(i(t));
+    };
+    });
+
+  //Fade in categories
+  chartRow.select(".category").transition()
+    .duration(500)
+    .attr("opacity",1);
+
+
+  ////////
+  //EXIT//
+  ////////
+
+  //Fade out and remove exit elements
+  chartRow.exit().transition()
+    .style("opacity","0")
+    .attr("transform", "translate(0," + (height + margin.top + margin.bottom) + ")")
+    .remove();
+
+
+  ////////////////
+  //REORDER ROWS//
+  ////////////////
+
+  var delay = function(d, i) { return 200 + i * 30; };
+
+  chartRow.transition()
+    .delay(delay)
+    .duration(900)
+    .attr("transform", function(d){ return "translate(0," + y(d.pageTitle) + ")"; });
+};
+
+
+
+//Pulls data
+//Since our data is fake, adds some random changes to simulate a data stream.
+//Uses a callback because d3.json loading is asynchronous
+var pullData = function(settings,callback){
+  
+    var data=JSON.parse(result.results);
+    console.log(data);
+    var newData = data;
+    data.forEach(function(d,i){
+      var newValue = d.oms //+ Math.floor((Math.random()*5))
+      //console.log(newValue);
+      newData[i].oms = newValue //<= 0 ? 10 : newValue
+    })
+
+    newData = formatData(newData);
+
+    callback(settings,newData);
+
+   
+}
+
+//Sort data in descending order and take the top 10 values
+var formatData = function(data){
+    return data.sort(function (a, b) {
+        return b.oms - a.oms;
+      })
+    .slice(0, 10);
+}
+
+//I like to call it what it does
+var redraw = function(settings){
+  pullData(settings,redrawChart)
+}
+
+//setup (includes first draw)
+var settings = setup('#d3-container');
+redraw(settings)
+
+//Repeat every 3 seconds
+//setInterval(function(){
+  //redraw(settings)
+//}, 3000);
+
+}
+
+
+
+  $(function () {
+            var options = {
+            };
+           
+        });
+
+
+
+
+
+
+</script>
+  
+</html>
+     
