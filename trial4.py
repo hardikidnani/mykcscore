@@ -156,7 +156,7 @@ def data():
 
 		#8) Sorting the data
 
-		data4=dt[['pageTitle','oms','sessions','B.Sessions','pageviews','B.PageViews','users','B.Users','uniquePageviews','B.UniquePVS','avgTimeOnPage','B.TOP','bounceRate','B.BounceRate','S.Avg','P.Avg','UP.Avg','US.Avg','TOP.Avg','BR.Avg','X.avg']]
+		data4=dt[['pageTitle','oms','sessions','B.Sessions','pageviews','B.PageViews','users','B.Users','uniquePageviews','B.UniquePVS','avgTimeOnPage','B.TOP','bounceRate','B.BounceRate','S.Avg','P.Avg','UP.Avg','US.Avg','TOP.Avg','BR.Avg','X.avg','pagePath']]
 		sa=data4.sort(['oms'],ascending=False)
 		y=sa.head(10)
 		z=y.reset_index().to_json(orient='records')
@@ -238,8 +238,8 @@ def views():
 
 
 if __name__=="__main__":
-    #app.run(port=8005,debug=True)
-    #app.run(threaded=True)
+    app.run(port=8005,debug=True)
+    app.run(threaded=True)
     app.debug= True
    
     app.run()

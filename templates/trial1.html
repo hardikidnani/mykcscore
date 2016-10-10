@@ -73,11 +73,39 @@
   </br>
   </br>
 
-   <div id="graphs" style="width:100%;margin-top:200px;">
-        <div id="d3-container" class="left"></div>  
-        <div id="kcsimg" class="right"><img src="{{ url_for('static', filename='KingContentScore.png')}}" style=" width: 650px;margin-top: -40px;">
+  <!-- <div id="graphs" style="width:100%;margin-top:200px;">
+       
+        
         </div>           
-   </div>
+   </div>-->
+<div id="graphs" style="width:100%;margin-top:200px;">
+<div class="container-fluid">
+                                      <div class="row" style="border-style: none;">
+                                          <div class="col-sm-6" style="border-style: none;">
+                                          <div class="panel panel-default" style="border-style: none;">
+                                                 <div class="panel-body" style="border-style: none;"> 
+                                                      <div id="d3-container"></div>   
+                                                  </div>
+                                          </div>
+                                        </div>
+
+                                        <div class="col-sm-6" style="border-style: none;">
+                                          <div class="panel panel-default" style="border-style:none;">
+                                          <div id="kcsimg" class="right"><img src="{{ url_for('static', filename='KingContentScore.png')}}" style=" width: 650px;margin-top: -40px;">
+                                                 <div class="panel-body">
+                                                      
+                                                  </div>
+                                          </div>
+                                        </div>
+                                        </div>
+                                      </div>
+</div>
+</div>
+</div>
+
+
+
+
   </br>
 </br>
 </br>
@@ -863,6 +891,7 @@ var redrawChart = function(targetID, newdata) {
                             data1=d3.select(this);
                             data1=d;
 
+                            
 
 
 
