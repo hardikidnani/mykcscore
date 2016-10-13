@@ -54,7 +54,9 @@
        <input type="button" id="runscore" class="button" name="button" value="Calculate Scores" onClick="runscore();setVisibility('chart', 'none');setVisibility('d3-container', 'none');setVisibility('kcsimg', 'inline');setVisibility('chart2', 'none');setVisibility('gdetails', 'none');setVisibility('linkks', 'none');closeNav();" style="margin-top: 25px; padding: 4px; margin-left: -30px;">
     </div></br></br>
 </div>
-  <div style="background-color:black;padding:3px;width:100%; position: fixed;" >
+    <!--<img src="spinner.gif">
+    <div id-"limg" style="background:url(spinner.gif) no-repeat center center;width:32px;height:32px;"></div>-->
+    <div style="background-color:black;padding:3px;width:100%; position: fixed;" >
     <img alt="Communique" src="http://app.communique.biz/assets/logos/communique-logo-top.png"></img>
   </div>
 </br>
@@ -84,6 +86,9 @@
                                           <div class="col-sm-6" style="border-style: none;">
                                           <div class="panel panel-default" style="border-style: none;">
                                                  <div class="panel-body" style="border-style: none;"> 
+                                                      <div id="limg" style="display:none;">
+                                                      <img src="{{ url_for('static', filename='ellipsis.gif')}}" style="position:fixed;background:url({{ url_for('static', filename='ellipsis.gif')}}) no-repeat center center; "> Loading... 
+                                                      </div>
                                                       <div id="d3-container"></div>   
                                                   </div>
                                           </div>
@@ -775,11 +780,15 @@ var html = '';
                 //console.log(bendd);
           var proc = new Date().getTime();
 				$('#scores-container').html(' ');
+        $('#limg').show();
 				$.ajax({
 					url: '/prog',
 					data: {'profileid':viewid,'bstartd':bs,'bendd':be,'startd':startd,'endd':endd},
 					type: 'GET',
-					success: [generated2graph]
+					success: [generated2graph],
+          complete: function(){
+            $('#limg').hide();
+          } 
            
 
 				});	
@@ -878,7 +887,7 @@ var redrawChart = function(targetID, newdata) {
                                       //                     console.log(y);
                                         //                   console.log(z);  
 
-                            scrolld();
+                            
                             showDiv();
                             setVisibility('gdetails', 'inline');
                             setVisibility('chart', 'inline');
@@ -1309,6 +1318,8 @@ var redrawChart = function(targetID, newdata) {
                   
                             });
                           }
+
+                          scrolld();
 
                           //generate(data1.avgTimeOnPage);
 
