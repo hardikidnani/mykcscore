@@ -1,0 +1,225 @@
+/*Mystyle-css*/
+
+#sidebar-wrapper img {
+    width: 100%;
+}
+#sidebar-wrapper .left-menu-nav {
+    width: 100%;
+    float: left;
+}
+@media (min-width: 768px){
+    #wrapper {
+        padding-left: 300px;
+    }
+#sidebar-wrapper {
+    width: 300px;
+    }
+/*    .sidebar .sidebar-wrapper {
+        width: 300px;
+    }*/
+}
+
+#sidebar-wrapper {
+    z-index: 1000;
+    position: fixed;
+    left: 300px;
+    height: 100%;
+    margin-left: -300px;
+    overflow-y: auto;
+    background: #000;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+
+
+.left-menu-nav li {
+    text-decoration: none;
+    list-style: none;
+    padding: 15px 20px;
+    float: left;
+    width: 100%;
+}
+
+.left-menu-nav .ndesign
+{
+    width: 100%;
+/*  height: 40px;*/
+    padding-left: 10‒;
+    border-left-width: 0px;
+    color:#000;
+    font-size: 14px !important;
+    line-height: 28px;
+    color: #333333;
+    border-radius: 4px;
+    border: 1px solid #FFFFFF;
+
+}
+
+.left-menu-nav .calender-period {
+
+    width: 100%;
+    height: 40px;
+}
+
+.left-menu-nav .calender-period button {
+    width: 100%;
+    float: left;
+    height: 40px;
+    color: #FFFFFF;
+    background-color: #FF9050;
+    font-weight:bold;
+    border-radius: 4px;
+    border-color: transparent;
+}
+
+.left-menu-nav  #reportrange {
+    background-color: #fff;
+    height: 40px;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+.left-menu-nav  #reportrange i.fa.fa-caret-down {
+    float: right;
+    margin-top: 2px;
+}
+.left-menu-nav  #reportrange span {
+    padding-left: 10px;
+}
+.daterangepicker.dropdown-menu.ltr.opensright {
+        width: 262px;
+}
+.daterangepicker.dropdown-menu.ltr.opensright .ranges {
+    margin: 0;
+    width: 100%;
+    float: left;
+    padding: 5px;
+    left: 19px;
+}
+.daterangepicker .ranges ul {
+    width: 100%;
+}
+.daterangepicker .range_inputs button {
+    width: 48%;
+}
+.daterangepicker .range_inputs button.cancelBtn.btn.btn-sm.btn-default  {
+    margin-left: 1%;
+}
+.ndesign .btn-info {
+    background-color: #fff;
+    border-color: transparent;
+    color: #000;
+}
+.clients-container .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn){
+    width: 100%;
+    float: left;
+}
+.clients-container .ndesign .dropdown-menu {
+    width: 261px;
+    float: left;
+    height: auto;
+    overflow-x: hidden;
+    margin-left: -2px;
+}
+.ndesign .dropdown-menu ul li {
+    padding: 0;
+}
+.ndesign .dropdown-menu>li>a {
+    padding: 5px 12px;
+}
+.ndesign .dropdown-menu>li>a:focus {
+    outline: 0;
+}
+
+
+
+.ndesign .btn-info:hover, .ndesign .btn-info:focus, .ndesign .btn-info:active {
+    color: #000;
+    background-color: #fff;
+    border-color: transparent;
+    outline: 0;
+}
+.ndesign .dropdown-toggle.btn-info {
+    color: #000;
+    background-color: #fff;
+    border-color: transparent;
+    outline: 0;
+    box-shadow: none;
+}
+.ndesign .dropdown-toggle:focus {
+    outline: 0;
+    outline-offset: 0;
+}
+
+.calender-period {
+    margin-top: 10px;
+}
+.allgraphs {
+    display:none;
+    padding: 20px;
+}
+.allgraphs span {
+    font-size: 18px;
+    color: #666;
+    display:inline-block;
+    padding-left: 8px;
+}
+.allgraphs span.back {
+    color: #ff9050;
+}
+.adetails {
+    width: 100%;
+    float: left;
+    font-size:24px;
+    padding-left:15px;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+.detailstuff {
+    width: 100%;
+    float: left;
+}
+
+.gdetails {
+    width: 100%;
+    float: left;
+    margin-top: 20px;
+}
+
+.gdetails h2 {
+    font-size:17px;
+    font-family: 'Open Sans', sans-serif;
+    text-align: center;
+    margin: 0;
+    font-weight: 700;
+}
+
+.toptenarticles {
+    width: 100%;
+    float: left;
+    display: none;
+}
+.graphs {
+    height: 100%;
+    float: left;
+    width: 100%;
+    margin: 20px;
+}
+.tocntent {
+    padding: 20px 20px 0px;
+    width: 100%;
+    float: left;
+}
+#d3-container {
+    background-color: #fff;
+    /*margin: 0 20px;*/
+/*    padding: 30px 30px;*/
+/*    border: 20px solid #F0F0F0;*/
+}
+
+/*Mystyle-css-E*/

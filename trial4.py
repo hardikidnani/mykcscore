@@ -55,6 +55,13 @@ class ExampleForm(Form):
 @app.route('/') #
 #@line_profile
 def home():
+	return render_template("home.html")
+    #return "homepage here"
+
+
+@app.route('/chscore',methods=['GET','POST']) #
+#@line_profile
+def score():
 	return render_template("trial1.html")
 
 #@app.route('/about') #
@@ -71,6 +78,7 @@ def data():
 	bendd=request.args.get('bendd')
 	startdate=request.args.get('startd')
 	enddate=request.args.get('endd')
+	segid=request.args.get('sid')
 	print startdate
 	print enddate
 	#sn=datetime.strptime('%Y-%m-%d')
@@ -83,7 +91,9 @@ def data():
 		   'dimensions'    : ['ga:pageTitle,ga:pagePath'],
 		   'start_date'    : '%s' % bstartd,
 		   'end_date'	   :'%s' % bendd,
-		    'filters'    :'ga:sessions>50'
+		    'filters'      :'ga:sessions>50',
+		    'segment' 	   : 'gaid::' + segid
+
 
 		}
 		 
@@ -113,7 +123,8 @@ def data():
 		   'dimensions'    : ['ga:pageTitle,ga:pagePath'],
 		   'start_date'    : '%s' % startdate,
 		    'filters'    :'ga:sessions>50',
-		         'end_date':'%s' % enddate
+		       'end_date':'%s' % enddate,
+		       'segment' : 'gaid::' + segid
 		        }
 		 
 		dt, metadata = conn.execute_query(**query)
@@ -199,6 +210,7 @@ def clients():
 	accounts = service.management().accounts().list().execute()
 	return jsonify(results=accounts)
 
+
 @app.route('/profile', methods=['GET','POST'])
 def profile():
 	service = initialize_service()
@@ -212,10 +224,11 @@ def profile():
 	if request.method=='GET':
 		webproperties = service.management().webproperties().list(accountId=text).execute()
 		return jsonify(results=webproperties)
-		profiles = service.management().profiles().list(accountId=text,webPropertyId=dprofile).execute()
-		return jsonify(results=profiles)
+		#profiles = service.management().profiles().list(accountId=text,webPropertyId=dprofile).execute()
+		#return jsonify(results=profiles)
 		#return response(json.dumps(webproperties),mimetype='application/json')
-		#return render_template("index.html",message=webproperties)
+		return render_template("trial1.html",results=webproperties)
+
 
 @app.route('/views', methods=['GET','POST'])
 def views():
@@ -236,9 +249,39 @@ def views():
 	#return render_template("about.html",webproperties=message)
 	#return profile.get()
 
+@app.route('/segments',methods=['GET','POST'])
+def segments():
+	service = initialize_service()
+	segments = service.management().segments().list().execute()
+	profilename=request.args.get('prname')
+	ret = []
+	counter=0
+	#accounts = service.management().accounts().list().execute()
+	if request.method=='GET':
+		#segments = service.management().segments().list().execute()
+		for i in segments["items"]:
+			s=i["name"]
+			#print s
+			if profilename in s:
+				#print profilename
+				#print s
+				#print i
+				#ret[counter]= i
+				#counter=counter+1
+				ret.append(i)
+				#return jsonify(results=i)
+
+		# segments
+		#return render_template("trial1.html",results=segments)
+		return jsonify(results=ret)
+
+
+	
+
+
 
 if __name__=="__main__":
-    app.run(port=8006,debug=True)
+    app.run(port=8005,debug=True)
     app.run(threaded=True)
     app.debug= True
    

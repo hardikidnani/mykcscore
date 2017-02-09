@@ -3,224 +3,1195 @@
   <head>
   	<meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="{{ url_for('static', filename='gridstack.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/gridstack.css') }}">
 <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
-<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/latest/css/bootstrap.css" /> 
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css')}}">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap-select.min.css')}}">
+
+<!--<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/latest/css/bootstrap.css" /> -->
+<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">-->
 <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/roboto.css')}}">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/material-design.css')}}">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/small-n-flat.css')}}">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/c3.min.css')}}">
-<script src="http://d3js.org/d3.v3.min.js"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='modernizr.js') }}"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.1.5/angular.min.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.3.9/d3.min.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/nvd3/1.1.13-beta/nv.d3.min.js"></script>
-<script src="http://cmaurer.github.io/angularjs-nvd3-directives/lib/angularjs-nvd3-directives/dist/angularjs-nvd3-directives.js"></script>
-<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
-<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.5.0/lodash.min.js"></script>
-<script src="https://cdn.jsdelivr.net/lodash/4.15.0/lodash.min.js"></script>
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/gridstack.js/0.2.6/gridstack.min.js"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='gridstack.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='gridstack.jQueryUI.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='guage.js') }}"></script>
-<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.min.js"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='raphael-2.1.4.min.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='justgage.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='velocity.min.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='velocity.ui.min.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='main.js') }}"></script>
-
-<script type=text/javascript> $SCRIPT_ROOT = {{ request.script_root|tojson|safe }}; </script>
-<body>
-
-  <div id="mysidemenu" class="side-menu">
-     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-    <center>One Metric Score</center>
-   </br>
-    <div align="center" id="clients-container">
-      <select id="clients" class="form-control"><option>Loading clients...</option></select>
-    </div></br>
-    <div align="center" id="profiles-container"></div></br>
-    <div align="center" id="views-container"></div><br>
-    <div id="reportrange" class="pull-left" style="background: #fff; cursor: pointer; padding: 2px; border: 1px solid #ccc; margin-left: 35px;">
-      <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
-       <span id="rangeValue"></span> <b class="caret"></b> </div>
-    <div id="btn">
-       <input type="button" id="runscore" class="button" name="button" value="Calculate Scores" onClick="runscore();setVisibility('chart', 'none');setVisibility('d3-container', 'none');setVisibility('kcsimg', 'inline');setVisibility('chart2', 'none');setVisibility('gdetails', 'none');setVisibility('linkks', 'none');closeNav();" style="margin-top: 25px; padding: 4px; margin-left: -30px;">
-    </div></br></br>
-</div>
-    <!--<img src="spinner.gif">
-    <div id-"limg" style="background:url(spinner.gif) no-repeat center center;width:32px;height:32px;"></div>-->
-    <div style="background-color:black;padding:3px;width:100%; position: fixed;" >
-    <img alt="Communique" src="http://app.communique.biz/assets/logos/communique-logo-top.png"></img>
-  </div>
-</br>
-</br>
-</br>
-
-<div id="main">
-                <div class="w3-container" style="position : fixed; background-color: rgba(6, 5, 5, 0.18);">
-                  <h2>King Content Score</h2>
-                  <p>The One Metric is a single score that tells you how successful a piece of content was by comparing it to the average performance of the content that came before it.</br>
-                  <span style="font-size:20px;cursor:pointer; position: fixed;" onclick="openNav()">&#9776; Select Client</span>
-                </br>
-                  </p>
-                  <hr>
-                </div>
-  </br>
-  </br>
-
-  <!-- <div id="graphs" style="width:100%;margin-top:200px;">
-       
-        
-        </div>           
-   </div>-->
-<div id="graphs" style="width:100%;margin-top:200px;">
-<div class="container-fluid">
-                                      <div class="row" style="border-style: none;">
-                                          <div class="col-sm-6" style="border-style: none;">
-                                          <div class="panel panel-default" style="border-style: none;">
-                                                 <div class="panel-body" style="border-style: none;"> 
-                                                      <div id="limg" style="display:none;">
-                                                      <img src="{{ url_for('static', filename='ellipsis.gif')}}" style="position:fixed;background:url({{ url_for('static', filename='ellipsis.gif')}}) no-repeat center center; "> Loading... 
-                                                      </div>
-                                                      <div id="d3-container"></div>   
-                                                  </div>
-                                          </div>
-                                        </div>
-
-                                        <div class="col-sm-6" style="border-style: none;">
-                                          <div class="panel panel-default" style="border-style:none;">
-                                          <div id="kcsimg" class="right"><img src="{{ url_for('static', filename='KingContentScore.png')}}" style=" width: 650px;margin-top: -40px;">
-                                                 <div class="panel-body">
-                                                      
-                                                  </div>
-                                          </div>
-                                        </div>
-                                        </div>
-                                      </div>
-</div>
-</div>
-</div>
-
-
-
-
-  </br>
-</br>
-</br>
-
-<div id="hide" style="display:none">
-                        <div id="gdetails" class="kcs">
-                                      <div class="container-fluid">
-                                      <div class="row">
-                                          <div class="col-sm-6">
-                                          <div class="panel panel-default">
-                                            <div class="panel-heading">Performance Vs Expectations</div>
-                                                 <div class="panel-body" style="width:700px; max-width:700px; position: relative;">
-                                                      <div id="chart" style="width:700px; max-width:700px; position: relative;">
-                                                      <svg></svg>
-                                                    </div>
-                                                  </div>
-                                          </div>
-                                        </div>
-
-                                        <div class="col-sm-6">
-                                          <div class="panel panel-default">
-                                            <div class="panel-heading">% Increase and decrease of Metrics</div>
-                                                 <div class="panel-body" style="width:700px; max-width:700px; position: relative;">
-                                                      <div id="chart2" style="width:700px; max-width:700px; position: relative;">
-                                                      <svg></svg>
-                                                    </div>
-                                                  </div>
-                                          </div>
-                                        </div>
-                                        </div>
-                                      </div>
-
-                                      <div class="container-fluid">
-                                          <div class="row">
-                                                      <div class="col-sm-6">
-                                                      <div class="panel panel-default">
-                                                        <div class="panel-heading">Bounce Rate</div>
-                                                             <div class="panel-body" >
-                                                              
-                                                                  <div class="row">
-                                                                      <div class="col-sm-6">
-                                                                          <div class="panel panel-default">
-                                                                              <div class="panel-heading">Performance</div>
-                                                                                  <div class="panel-body">
-                                                                                  <div id="g2" class="gauge"></div>
-                                                                                  </div>
-                                                                              </div>
-                                                                           </div>
-
-                                                                      <div class="col-sm-6">
-                                                                          <div class="panel panel-default">
-                                                                                <div class="panel-heading">Expectation</div>
-                                                                                  <div class="panel-body">
-                                                                                    <div id="g3" class="gauge"></div>
-                                                                                    </div>
-                                                                                  </div>
-                                                                            </div>
-                                                                      </div>
-                                                                    </div>
-                                                              </div>
-                                                      </div>
-                                                      <div class="col-sm-6">
-                                                        <div class="panel panel-default">
-                                                          <div class="panel-heading">Time on Page</div>
-                                                               <div class="panel-body">
-                                                             
-                                                                    <div class="row">
-                                                                        <div class="col-sm-6">
-                                                                            <div class="panel panel-default">
-                                                                                <div class="panel-heading">Performance</div>
-                                                                                    <div class="panel-body">
-                                                                                    <div id="g1" class="gauge"></div>
-                                                                                      </div>
-                                                                                    </div>
-                                                                             </div>
-                                                                        <div class="col-sm-6">
-                                                                            <div class="panel panel-default">
-                                                                                  <div class="panel-heading">Expectation</div>
-                                                                                    <div class="panel-body">
-                                                                                    <div id="g4" class="gauge"></div>
-                                                                                    </div>
-                                                                              </div>
-                                                                        </div>
-                                                                      </div>
-                                                                </div>
-                                                        </div>
-                                                      </div>
-                                                    </div>
-                                        </div>
-                        </div>
-    
-</br>
-
-<!--<a href="#" class="show_hide" id="plus">Check out CQ data</a>-->
-                                    <div id="linkks">
-                                    <div id= "cq"> </br><div id="g4" class="gauge"></br> <p> Here goes the data of CQ</p>
-                                 </div></div>
-
-                                    <a href="#top" id="bottom"  >Click to scroll up</a>
-                                    <button align="center">View More</button>
-                                     </div>
-                    </div>
-</div>
-
-</body>
-
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/scrolling-nav.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/nivo-lightbox.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/nivo-lightbox-theme/default/default.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/simple-sidebar.css')}}">
+<link rel="stylesheet" media="screen" type="text/css" href="{{ url_for('static', filename='css/owl.carousel.css')}}">
+<link rel="stylesheet" media="screen" type="text/css" href="{{ url_for('static', filename='css/owl.theme.css')}}">
+<link rel="stylesheet" media="screen" type="text/css" href="{{ url_for('static', filename='css/flexslider.css')}}">
+<link rel="stylesheet" media="screen" type="text/css" href="{{ url_for('static', filename='css/animate.css')}}">
+<link rel="stylesheet" media="screen" type="text/css" href="{{ url_for('static', filename='css/style.css')}}">
+<link rel="stylesheet" media="screen" type="text/css" href="{{ url_for('static', filename='css/style-new.css')}}">
+<link rel="stylesheet" media="screen" type="text/css" href="{{ url_for('static', filename='css/responsive.css')}}">
+<link rel="stylesheet" media="screen" type="text/css" href="{{ url_for('static', filename='css/helper.css')}}">
+<link rel="stylesheet" media="screen" type="text/css" href="{{ url_for('static', filename='css/pe-icon-7-stroke.css')}}">
+<link rel="stylesheet" media="screen" type="text/css" href="{{ url_for('static', filename='css/YTPlayer.css')}}">
+<link rel="stylesheet" media="screen" type="text/css" href="{{ url_for('static', filename='css/font-awesome.min.css')}}">
+<!--<link rel="stylesheet" media="screen" type="text/css" href="{{ url_for('static', filename='css/light-bootstrap-dashboard.css')}}"> -->
 
 
 
 <style type="text/css">
+
+
+.chartist-tooltip {
+  position: absolute;
+  display: inline-block;
+  opacity: 0;
+  min-width: 5em;
+  padding: .5em;
+  background: #F4C63D;
+  color: #453D3F;
+  font-family: Oxygen,Helvetica,Arial,sans-serif;
+  font-weight: 700;
+  text-align: center;
+  pointer-events: none;
+  z-index: 1;
+  -webkit-transition: opacity .2s linear;
+  -moz-transition: opacity .2s linear;
+  -o-transition: opacity .2s linear;
+  transition: opacity .2s linear; }
+  .chartist-tooltip:before {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    margin-left: -15px;
+    border: 15px solid transparent;
+    border-top-color: #F4C63D; }
+  .chartist-tooltip.tooltip-show {
+    opacity: 1; }
+
+.ct-area, .ct-line {
+  pointer-events: none; }
+
+
+
+
+.ct-chart .ct-label.ct-horizontal {
+  text-align: center;
+  font-weight: bold;
+}
+
+.ct-chart2 .ct-label.ct-horizontal {
+  text-align: center;
+  font-weight: bold;
+}
+
+.ct-chart .ct-bar {
+  stroke-width: 5px;
+}
+@media screen and (min-width: 300px) {
+  .ct-chart .ct-bar {
+    stroke-width: 10px;
+  }
+
+  .ct-series-a .ct-bar{
+    stroke-width: 10px;
+   }
+
+  .ct-series-b .ct-bar{
+    stroke-width: 10px;
+   }
+
+
+}
+@media screen and (min-width: 600px) {
+  .ct-chart .ct-bar {
+    stroke-width: 40px;
+  }
+
+  .ct-series-a .ct-bar{
+    stroke-width: 40px;
+   }
+
+    .ct-series-b .ct-bar{
+    stroke-width: 40px;
+   }
+}
+
+.ct-series-a .ct-bar{
+  /* Colour of your bars */
+  stroke: #7dba7d;
+  /* The width of your bars */
+  /*stroke-width: 20px;*/
+
+  /* Yes! Dashed bars! */
+  /*stroke-dasharray: 20px;*/
+  /* Maybe you like round corners on your bars? */
+  /*stroke-linecap: round;*/
+}
+
+.ct-series-b .ct-bar {
+  /* Colour of your bars */
+  stroke: red;
+  /* The width of your bars */
+  /*stroke-width: 20px;*/
+  /* Yes! Dashed bars! */
+  /*stroke-dasharray: 20px;*/
+  /* Maybe you like round corners on your bars? */
+  /*stroke-linecap: round;*/
+}
+.typed-cursor{
+    font-size: -webkit-xxx-large;
+    color: black;
+    opacity: 1;
+    -webkit-animation: blink 0.7s infinite;
+    -moz-animation: blink 0.7s infinite;
+    animation: blink 0.7s infinite;
+}
+@keyframes blink{
+    0% { opacity:1; }
+    50% { opacity:0; }
+    100% { opacity:1; }
+}
+@-webkit-keyframes blink{
+    0% { opacity:1; }
+    50% { opacity:0; }
+    100% { opacity:1; }
+}
+@-moz-keyframes blink{
+    0% { opacity:1; }
+    50% { opacity:0; }
+    100% { opacity:1; }
+}
+.video-section .pattern-overlay {
+background-color: rgba(71, 71, 71, 0.59);
+padding: 110px 0 32px;
+min-height: 496px; 
+/* Incase of overlay problems just increase the min-height*/
+}
+.video-section h1, .video-section h3{
+text-align:center;
+color:#fff;
+}
+.video-section h1{
+font-size:110px;
+font-family: 'Buenard', serif;
+font-weight:bold;
+text-transform: uppercase;
+margin: 40px auto 0px;
+text-shadow: 1px 1px 1px #000;
+-webkit-text-shadow: 1px 1px 1px #000;
+-moz-text-shadow: 1px 1px 1px #000;
+}
+.video-section h3{
+font-size: 25px;
+font-weight:lighter;
+margin: 0px auto 15px;
+}
+.video-section .buttonBar{display:none;}
+.player {font-size: 1px;}
+.fullscreen-bg {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+  z-index: -100;
+}
+
+.fullscreen-bg__video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+@media (min-aspect-ratio: 16/9) {
+  .fullscreen-bg__video {
+    height: 300%;
+    top: -100%;
+  }
+}
+
+@media (max-aspect-ratio: 16/9) {
+  .fullscreen-bg__video {
+    width: 300%;
+    left: -100%;
+  }
+}
+
+@media (max-width: 767px) {
+  .fullscreen-bg {
+    background: url('../img/videoframe.jpg') center center / cover no-repeat;
+  }
+
+  .fullscreen-bg__video {
+    display: none;
+  }
+}
+
+
+
+
+ul.tab {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    /*border: 1px solid #ccc;*/
+    background-color: #F0F0F0;
+}
+
+/* Float the list items side by side */
+ul.tab li {float: left;}
+
+/* Style the links inside the list items */
+ul.tab li a {
+    display: inline-block;
+    color: black;
+    text-align: center;
+    /*padding: 14px 16px;*/
+    padding-top: 10px;
+    padding-bottom: 0px;
+    padding-left: 20px;
+    padding-right: 20px;
+    text-decoration: none;
+    transition: 0.3s;
+    font-size: 17px;
+}
+
+/* Change background color of links on hover */
+ul.tab li a:hover {background-color: #00ffffff;}
+
+/* Create an active/current tablink class */
+ul.tab li a:focus, .active {background-color: #ffffff;}
+
+/* Style the tab content */
+.tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+
+.svg-container {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%;
+    vertical-align: top;
+    overflow: hidden;
+}
+.svg-content {
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.fostyle
+{
+
+font-family: Open Sans Regular !important;
+font-size: 16px !important;
+
+}
+.hstyle{
+
+
+
+font-size: 18px !important;
+margin-bottom: 10px !important;
+display: inline;
+color: white !important;
+}
+.sidebar .nav a,
+.table > tbody > tr .td-actions .btn {
+  -webkit-transition: all 150ms ease-in;
+  -moz-transition: all 150ms ease-in;
+  -o-transition: all 150ms ease-in;
+  -ms-transition: all 150ms ease-in;
+  transition: all 150ms ease-in;
+}
+
+.fa {
+  width: 18px;
+  text-align: center;
+}
+
+.margin-top {
+  margin-top: 50px;
+}
+
+.wrapper {
+  position: relative;
+  top: 0;
+  height: 100vh;
+}
+
+.sidebar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 300px;
+  display: block;
+  z-index: 1;
+  /*color: #;*/
+  font-weight: 200;
+  background-size: cover;
+  background-position: center center;
+}
+.sidebar .sidebar-wrapper {
+  background-color: #333333;
+  position: relative;
+  max-height: none;
+  min-height: 100%;
+  overflow: hidden;
+  width: 300px;
+  z-index: 4;
+}
+.sidebar .sidebar-background {
+  position: absolute;
+  z-index: 1;
+  height: 100%;
+  width: 100%;
+  display: block;
+  top: 0;
+  left: 0;
+  background-size: cover;
+  background-position: center center;
+}
+.sidebar .logo {
+  padding: 10px 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+.sidebar .logo p {
+  float: left;
+  font-size: 20px;
+  margin: 10px 10px;
+  color: #FFFFFF;
+  line-height: 20px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.sidebar .logo .simple-text {
+  text-transform: uppercase;
+  padding: 5px 0px;
+  display: block;
+  font-size: 18px;
+  color: #FFFFFF;
+  text-align: center;
+  font-weight: 400;
+  line-height: 30px;
+}
+.sidebar .logo-tim {
+  border-radius: 50%;
+  border: 1px solid #333;
+  display: block;
+  height: 61px;
+  width: 61px;
+  float: left;
+  overflow: hidden;
+}
+.sidebar .logo-tim img {
+  width: 60px;
+  height: 60px;
+}
+.sidebar .nav {
+  margin-top: 20px;
+}
+.sidebar .nav li > a {
+  color: #FFFFFF;
+  margin: 5px 15px;
+  opacity: .86;
+  border-radius: 4px;
+}
+.sidebar .nav li:hover > a {
+  background: rgba(255, 255, 255, 0.13);
+  opacity: 1;
+}
+.sidebar .nav li.active > a {
+  color: #FFFFFF;
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.23);
+}
+.sidebar .nav p {
+  margin: 0;
+  line-height: 30px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.sidebar .nav i {
+  font-size: 28px;
+  float: left;
+  margin-right: 15px;
+  line-height: 30px;
+  width: 30px;
+  text-align: center;
+}
+
+.sidebar .logo,
+body > .navbar-collapse .logo {
+  padding: 10px 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+.sidebar .logo p,
+body > .navbar-collapse .logo p {
+  float: left;
+  font-size: 20px;
+  margin: 10px 10px;
+  color: #FFFFFF;
+  line-height: 20px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.sidebar .logo .simple-text,
+body > .navbar-collapse .logo .simple-text {
+  text-transform: uppercase;
+  padding: 5px 0px;
+  display: block;
+  font-size: 18px;
+  color: #FFFFFF;
+  text-align: center;
+  font-weight: 400;
+  line-height: 30px;
+}
+.sidebar .logo-tim,
+body > .navbar-collapse .logo-tim {
+  border-radius: 50%;
+  border: 1px solid #333;
+  display: block;
+  height: 61px;
+  width: 61px;
+  float: left;
+  overflow: hidden;
+}
+.sidebar .logo-tim img,
+body > .navbar-collapse .logo-tim img {
+  width: 60px;
+  height: 60px;
+}
+.sidebar:after, .sidebar:before,
+body > .navbar-collapse:after,
+body > .navbar-collapse:before {
+  display: block;
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
+.sidebar:before,
+body > .navbar-collapse:before {
+  opacity: .33;
+  background: #000000;
+}
+.sidebar:after,
+body > .navbar-collapse:after {
+  background: #787878;
+  background: -moz-linear-gradient(top, #787878 0%, #343434 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #787878), color-stop(100%, #343434));
+  background: -webkit-linear-gradient(top, #787878 0%, #343434 100%);
+  background: -o-linear-gradient(top, #787878 0%, #343434 100%);
+  background: -ms-linear-gradient(top, #787878 0%, #343434 100%);
+  background: linear-gradient(to bottom, #787878 0%, #343434 100%);
+  background-size: 150% 150%;
+  z-index: 3;
+  opacity: 1;
+}
+.sidebar[data-image]:after, .sidebar.has-image:after,
+body > .navbar-collapse[data-image]:after,
+body > .navbar-collapse.has-image:after {
+  opacity: .77;
+}
+.sidebar[data-color="blue"]:after,
+body > .navbar-collapse[data-color="blue"]:after {
+  background: #1F77D0;
+  background: -moz-linear-gradient(top, #1F77D0 0%, #533ce1 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #1F77D0), color-stop(100%, #533ce1));
+  background: -webkit-linear-gradient(top, #1F77D0 0%, #533ce1 100%);
+  background: -o-linear-gradient(top, #1F77D0 0%, #533ce1 100%);
+  background: -ms-linear-gradient(top, #1F77D0 0%, #533ce1 100%);
+  background: linear-gradient(to bottom, #1F77D0 0%, #533ce1 100%);
+  background-size: 150% 150%;
+}
+.sidebar[data-color="azure"]:after,
+body > .navbar-collapse[data-color="azure"]:after {
+  background: #1DC7EA;
+  background: -moz-linear-gradient(top, #1DC7EA 0%, #4091ff 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #1DC7EA), color-stop(100%, #4091ff));
+  background: -webkit-linear-gradient(top, #1DC7EA 0%, #4091ff 100%);
+  background: -o-linear-gradient(top, #1DC7EA 0%, #4091ff 100%);
+  background: -ms-linear-gradient(top, #1DC7EA 0%, #4091ff 100%);
+  background: linear-gradient(to bottom, #1DC7EA 0%, #4091ff 100%);
+  background-size: 150% 150%;
+}
+.sidebar[data-color="green"]:after,
+body > .navbar-collapse[data-color="green"]:after {
+  background: #87CB16;
+  background: -moz-linear-gradient(top, #87CB16 0%, #6dc030 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #87CB16), color-stop(100%, #6dc030));
+  background: -webkit-linear-gradient(top, #87CB16 0%, #6dc030 100%);
+  background: -o-linear-gradient(top, #87CB16 0%, #6dc030 100%);
+  background: -ms-linear-gradient(top, #87CB16 0%, #6dc030 100%);
+  background: linear-gradient(to bottom, #87CB16 0%, #6dc030 100%);
+  background-size: 150% 150%;
+}
+.sidebar[data-color="orange"]:after,
+body > .navbar-collapse[data-color="orange"]:after {
+  background: #FFA534;
+  background: -moz-linear-gradient(top, #FFA534 0%, #ff5221 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #FFA534), color-stop(100%, #ff5221));
+  background: -webkit-linear-gradient(top, #FFA534 0%, #ff5221 100%);
+  background: -o-linear-gradient(top, #FFA534 0%, #ff5221 100%);
+  background: -ms-linear-gradient(top, #FFA534 0%, #ff5221 100%);
+  background: linear-gradient(to bottom, #FFA534 0%, #ff5221 100%);
+  background-size: 150% 150%;
+}
+.sidebar[data-color="red"]:after,
+body > .navbar-collapse[data-color="red"]:after {
+  background: #FB404B;
+  background: -moz-linear-gradient(top, #FB404B 0%, #bb0502 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #FB404B), color-stop(100%, #bb0502));
+  background: -webkit-linear-gradient(top, #FB404B 0%, #bb0502 100%);
+  background: -o-linear-gradient(top, #FB404B 0%, #bb0502 100%);
+  background: -ms-linear-gradient(top, #FB404B 0%, #bb0502 100%);
+  background: linear-gradient(to bottom, #FB404B 0%, #bb0502 100%);
+  background-size: 150% 150%;
+}
+.sidebar[data-color="purple"]:after,
+body > .navbar-collapse[data-color="purple"]:after {
+  background: #9368E9;
+  background: -moz-linear-gradient(top, #9368E9 0%, #943bea 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #9368E9), color-stop(100%, #943bea));
+  background: -webkit-linear-gradient(top, #9368E9 0%, #943bea 100%);
+  background: -o-linear-gradient(top, #9368E9 0%, #943bea 100%);
+  background: -ms-linear-gradient(top, #9368E9 0%, #943bea 100%);
+  background: linear-gradient(to bottom, #9368E9 0%, #943bea 100%);
+  background-size: 150% 150%;
+}
+
+.main-panel {
+  background-color: #F0F0F0 !important ;
+  position: relative;
+  z-index: 2;
+  float: right;
+  /*width: calc(100% - 300px);*/
+  width:100%;
+  min-height: 100%;
+}
+.main-panel > .content {
+  padding: 30px 15px;
+  min-height: calc(100% - 123px);
+}
+.main-panel > .footer {
+  border-top: 1px solid #e7e7e7;
+}
+.main-panel .navbar {
+  margin-bottom: 0;
+}
+
+.sidebar,
+.main-panel {
+  overflow: auto;
+  max-height: 100%;
+  height: 100%;
+  -webkit-transition-property: top,bottom;
+  transition-property: top,bottom;
+  -webkit-transition-duration: .2s,.2s;
+  transition-duration: .2s,.2s;
+  -webkit-transition-timing-function: linear,linear;
+  transition-timing-function: linear,linear;
+  -webkit-overflow-scrolling: touch;
+}
+
+.nav > li > a:hover,
+.nav > li > a:focus {
+  background-color: transparent;
+}
+
+.navbar {
+  border: 0;
+  font-size: 16px;
+  border-radius: 0;
+}
+.navbar .navbar-brand {
+  font-weight: 400;
+  margin: 5px 0px;
+  padding: 15px 15px;
+  font-size: 20px;
+}
+.navbar .navbar-nav > li > a {
+  padding: 10px 15px;
+  margin: 10px 3px;
+  position: relative;
+}
+.navbar .navbar-nav > li > a.btn {
+  margin: 15px 3px;
+  padding: 8px 16px;
+}
+.navbar .navbar-nav > li > a.btn-round {
+  margin: 16px 3px;
+}
+.navbar .navbar-nav > li > a [class^="fa"] {
+  font-size: 19px;
+  position: relative;
+  line-height: 16px;
+  top: 1px;
+}
+.navbar .navbar-nav .notification {
+  position: absolute;
+  background-color: #FB404B;
+  text-align: center;
+  border-radius: 10px;
+  min-width: 18px;
+  padding: 0 5px;
+  height: 18px;
+  font-size: 12px;
+  color: #FFFFFF;
+  font-weight: bold;
+  line-height: 18px;
+  top: 0px;
+  left: 7px;
+}
+.navbar .btn {
+  margin: 15px 3px;
+  font-size: 14px;
+}
+.navbar .btn-simple {
+  font-size: 16px;
+}
+.navbar.fixed {
+  width: calc(100% - $sidebar-width);
+  right: 0;
+  left: auto;
+  border-radius: 0;
+}
+
+.navbar-nav > li > .dropdown-menu {
+  border-radius: 10px;
+  margin-top: -5px;
+}
+
+.navbar-transparent .navbar-brand, [class*="navbar-ct"] .navbar-brand {
+  color: #FFFFFF;
+  opacity: 0.9;
+  filter: alpha(opacity=90);
+}
+.navbar-transparent .navbar-brand:focus, .navbar-transparent .navbar-brand:hover, [class*="navbar-ct"] .navbar-brand:focus, [class*="navbar-ct"] .navbar-brand:hover {
+  background-color: transparent;
+  opacity: 1;
+  filter: alpha(opacity=100);
+}
+.navbar-transparent .navbar-nav > li > a:not(.btn), [class*="navbar-ct"] .navbar-nav > li > a:not(.btn) {
+  color: #FFFFFF;
+  border-color: #FFFFFF;
+  opacity: 0.8;
+  filter: alpha(opacity=80);
+}
+.navbar-transparent .navbar-nav > .active > a:not(.btn),
+.navbar-transparent .navbar-nav > .active > a:hover:not(.btn),
+.navbar-transparent .navbar-nav > .active > a:focus:not(.btn),
+.navbar-transparent .navbar-nav > li > a:hover:not(.btn),
+.navbar-transparent .navbar-nav > li > a:focus:not(.btn), [class*="navbar-ct"] .navbar-nav > .active > a:not(.btn),
+[class*="navbar-ct"] .navbar-nav > .active > a:hover:not(.btn),
+[class*="navbar-ct"] .navbar-nav > .active > a:focus:not(.btn),
+[class*="navbar-ct"] .navbar-nav > li > a:hover:not(.btn),
+[class*="navbar-ct"] .navbar-nav > li > a:focus:not(.btn) {
+  background-color: transparent;
+  border-radius: 3px;
+  color: #FFFFFF;
+  opacity: 1;
+  filter: alpha(opacity=100);
+}
+.navbar-transparent .navbar-nav .nav > li > a.btn:hover, [class*="navbar-ct"] .navbar-nav .nav > li > a.btn:hover {
+  background-color: transparent;
+}
+.navbar-transparent .navbar-nav > .dropdown > a .caret,
+.navbar-transparent .navbar-nav > .dropdown > a:hover .caret,
+.navbar-transparent .navbar-nav > .dropdown > a:focus .caret, [class*="navbar-ct"] .navbar-nav > .dropdown > a .caret,
+[class*="navbar-ct"] .navbar-nav > .dropdown > a:hover .caret,
+[class*="navbar-ct"] .navbar-nav > .dropdown > a:focus .caret {
+  border-bottom-color: #FFFFFF;
+  border-top-color: #FFFFFF;
+}
+.navbar-transparent .navbar-nav > .open > a,
+.navbar-transparent .navbar-nav > .open > a:hover,
+.navbar-transparent .navbar-nav > .open > a:focus, [class*="navbar-ct"] .navbar-nav > .open > a,
+[class*="navbar-ct"] .navbar-nav > .open > a:hover,
+[class*="navbar-ct"] .navbar-nav > .open > a:focus {
+  background-color: transparent;
+  color: #FFFFFF;
+  opacity: 1;
+  filter: alpha(opacity=100);
+}
+.navbar-transparent .btn-default, [class*="navbar-ct"] .btn-default {
+  color: #FFFFFF;
+  border-color: #FFFFFF;
+}
+.navbar-transparent .btn-default.btn-fill, [class*="navbar-ct"] .btn-default.btn-fill {
+  color: #9A9A9A;
+  background-color: #FFFFFF;
+  opacity: 0.9;
+  filter: alpha(opacity=90);
+}
+.navbar-transparent .btn-default.btn-fill:hover,
+.navbar-transparent .btn-default.btn-fill:focus,
+.navbar-transparent .btn-default.btn-fill:active,
+.navbar-transparent .btn-default.btn-fill.active,
+.navbar-transparent .open .dropdown-toggle.btn-fill.btn-default, [class*="navbar-ct"] .btn-default.btn-fill:hover,
+[class*="navbar-ct"] .btn-default.btn-fill:focus,
+[class*="navbar-ct"] .btn-default.btn-fill:active,
+[class*="navbar-ct"] .btn-default.btn-fill.active,
+[class*="navbar-ct"] .open .dropdown-toggle.btn-fill.btn-default {
+  border-color: #FFFFFF;
+  opacity: 1;
+  filter: alpha(opacity=100);
+}
+
+.navbar-transparent .dropdown-menu .divider {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.nav-open .nav .caret {
+  border-bottom-color: #FFFFFF;
+  border-top-color: #FFFFFF;
+}
+
+.navbar-default {
+  background-color: rgba(255, 255, 255, 0.96);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.navbar-default .navbar-nav > li > a:not(.btn) {
+  color: #333333;
+}
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:not(.btn):hover,
+.navbar-default .navbar-nav > .active > a:not(.btn):focus,
+.navbar-default .navbar-nav > li > a:not(.btn):hover,
+.navbar-default .navbar-nav > li > a:not(.btn):focus {
+  background-color: transparent;
+  border-radius: 3px;
+  color: #ff9050;
+  opacity: 1;
+  filter: alpha(opacity=100);
+}
+.navbar-default .navbar-nav > .dropdown > a:hover .caret,
+.navbar-default .navbar-nav > .dropdown > a:focus .caret {
+  border-bottom-color: #1DC7EA;
+  border-top-color: #1DC7EA;
+}
+.navbar-default .navbar-nav > .open > a,
+.navbar-default .navbar-nav > .open > a:hover,
+.navbar-default .navbar-nav > .open > a:focus {
+  background-color: transparent;
+  color: #1DC7EA;
+}
+.navbar-default .navbar-nav .navbar-toggle:hover, .navbar-default .navbar-nav .navbar-toggle:focus {
+  background-color: transparent;
+}
+.navbar-default:not(.navbar-transparent) .btn-default:hover {
+  color: #333333;
+  border-color: #333333;
+}
+.navbar-default:not(.navbar-transparent) .btn-neutral, .navbar-default:not(.navbar-transparent) .btn-neutral:hover, .navbar-default:not(.navbar-transparent) .btn-neutral:active {
+  color: #9A9A9A;
+}
+
+/*      Navbar with icons            */
+.navbar-icons.navbar .navbar-brand {
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+.navbar-icons .navbar-nav > li > a {
+  text-align: center;
+  padding: 6px 15px;
+  margin: 6px 3px;
+}
+.navbar-icons .navbar-nav [class^="pe"] {
+  font-size: 30px;
+  position: relative;
+}
+.navbar-icons .navbar-nav p {
+  margin: 3px 0 0;
+}
+
+.navbar-form {
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+.navbar-form .form-control {
+  border-radius: 0;
+  border: 0;
+  padding: 0;
+  background-color: transparent;
+  height: 22px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #E3E3E3;
+}
+.navbar-transparent .navbar-form .form-control, [class*="navbar-ct"] .navbar-form .form-control {
+  color: #FFFFFF;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.navbar-ct-blue {
+  background-color: #4091e2;
+}
+
+.navbar-ct-azure {
+  background-color: #63d8f1;
+}
+
+.navbar-ct-green {
+  background-color: #a1e82c;
+}
+
+.navbar-ct-orange {
+  background-color: #ffbc67;
+}
+
+.navbar-ct-red {
+  background-color: #fc727a;
+}
+
+.navbar-transparent {
+  padding-top: 15px;
+  background-color: transparent;
+  border-bottom: 1px solid transparent;
+}
+
+.navbar-toggle {
+  margin-top: 19px;
+  margin-bottom: 19px;
+  border: 0;
+}
+.navbar-toggle .icon-bar {
+  background-color: #FFFFFF;
+}
+.navbar-toggle .navbar-collapse,
+.navbar-toggle .navbar-form {
+  border-color: transparent;
+}
+.navbar-toggle.navbar-default .navbar-toggle:hover, .navbar-toggle.navbar-default .navbar-toggle:focus {
+  background-color: transparent;
+}
+
+
+.ndesign
+{
+  
+    width: 234px;
+    height: 40px;
+    padding-left: 10‒;
+    border-left-width: 0px;
+    margin-top: 5px;
+    margin-left: 25px;
+    border-right-width: 0px;
+    margin-right: 25px;
+    margin-bottom: 20px;
+    color:black;
+   
+font-size: 14px !important;
+line-height: 28px;
+color: #333333;
+
+letter-spacing: -0.24px;
+/* Rectangle 5: */
+
+border-radius: 4px;
+/* Triangle: */
+/* Please select: */
+font-family: sans-serif;
+font-size: 14px;
+letter-spacing: -0.24px;
+/* 1: */
+
+/*font-size: 20px;*/
+
+letter-spacing: -0.34px;
+/* Oval 2 Copy: */
+border: 1px solid #FFFFFF;
+
+}
+
+/*reportrange.hidden{
+  visibility: hidden;
+}*/
+
+.video-section .pattern-overlay {
+background-color: rgba(71, 71, 71, 0.59);
+padding: 110px 0 32px;
+min-height: 496px; 
+/* Incase of overlay problems just increase the min-height*/
+}
+.video-section h1, .video-section h3{
+text-align:center;
+color:#fff;
+}
+.video-section h1{
+font-size:110px;
+font-family: 'Buenard', serif;
+font-weight:bold;
+text-transform: uppercase;
+margin: 40px auto 0px;
+text-shadow: 1px 1px 1px #000;
+-webkit-text-shadow: 1px 1px 1px #000;
+-moz-text-shadow: 1px 1px 1px #000;
+}
+.video-section h3{
+font-size: 25px;
+font-weight:lighter;
+margin: 0px auto 15px;
+}
+.video-section .buttonBar{display:none;}
+.player {font-size: 1px;}
+.fullscreen-bg {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+  z-index: -100;
+}
+
+.fullscreen-bg__video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+@media (min-aspect-ratio: 16/9) {
+  .fullscreen-bg__video {
+    height: 300%;
+    top: -100%;
+  }
+}
+
+@media (max-aspect-ratio: 16/9) {
+  .fullscreen-bg__video {
+    width: 300%;
+    left: -100%;
+  }
+}
+
+@media (max-width: 767px) {
+  .fullscreen-bg {
+    background: url('../img/videoframe.jpg') center center / cover no-repeat;
+  }
+
+  .fullscreen-bg__video {
+    display: none;
+  }
+}
+
+.kkcs
+{
+   height: 100%;
+   /*padding-top: 160px;*/
+}
+.kkkcs
+{
+   height: 100%;
+   /*padding-top: 100px;*/
+}
+.kcs
+{
+
+  height: 100%;
+  /*padding-top: 150px;*/
+}
+
+.topten
+{
+   height: 100%;
+   padding-top: 30px;  
+
+}
+
+.faq
+{
+  height: 100%;
+  padding-top: 150px;
+}
+.c-hamburger {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  width: 96px;
+  height: 96px;
+  font-size: 0;
+  text-indent: -9999px;
+  appearance: none;
+  box-shadow: none;
+  border-radius: none;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.c-hamburger:focus {
+  outline: none;
+}
+
+.c-hamburger span {
+  display: block;
+  position: absolute;
+  top: 44px;
+  left: 18px;
+  right: 18px;
+  height: 8px;
+  background: white;
+}
+
+.c-hamburger span::before,
+.c-hamburger span::after {
+  position: absolute;
+  display: block;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  background-color: #fff;
+  content: "";
+}
+
+.c-hamburger span::before {
+  top: -20px;
+}
+
+.c-hamburger span::after {
+  bottom: -20px;
+}
+
+.c-hamburger--rot {
+  background-color: #28aadc;
+}
+
+.c-hamburger--rot span {
+  transition: transform 0.3s;
+}
+
+/* active state, i.e. menu open */
+.c-hamburger--rot.is-active {
+  background-color: #166888;
+}
+
+.c-hamburger--rot.is-active span {
+  transform: rotate(90deg);
+}
+
+.c-hamburger:hover { transform: rotate(270deg);  transition: transform 0.3s;background-color: #166888;}
+
+.vcontainer{
+height:100%;    
+    }
+
+.col-md-4{
+ background-color:#D3D7E0;
+ opacity: 0.8;
+margin-top:20px;
+padding: 30px;
+height:300px;
+}
+
+.video-section .pattern-overlay {
+background-color: rgba(71, 71, 71, 0.29);
+padding: 110px 0 32px;
+min-height: 1500px;
+/* Incase of overlay problems just increase the min-height*/
+}
+
+
+.video-section h1, .video-section h3{
+text-align:center;
+color:#fff;
+}
+
+.video-section h1{
+font-size:110px;
+font-family: 'Buenard', serif;
+font-weight:bold;
+text-transform: uppercase;
+margin: 40px auto 0px;
+text-shadow: 1px 1px 1px #000;
+-webkit-text-shadow: 1px 1px 1px #000;
+-moz-text-shadow: 1px 1px 1px #000;
+}
+.video-section h3{
+font-size: 25px;
+font-weight:lighter;
+margin: 0px auto 15px;
+}
+.video-section .buttonBar{display:none;}
+.player {font-size: 1px;}
+
+.cwrapper
+{
+
+
+        text-align: center;
+    
+}
+
+
+.underline
+{
+
+  text-decoration: underline;
+}
+.grid {
+  
+  max-width: 1200px;
+}
+
+/* clear fix */
+.grid:after {
+  content: '';
+  display: block;
+  clear: both;
+}
+
+/* ---- .grid-item ---- */
+
+.grid-item {
+  float: left;
+ 
+  border: 2px solid hsla(0, 0%, 0%, 0.5);
+}
+
+.grid-item--width2 {}
+.grid-item--height2 {}
+
+.grid-item:hover {
+ 
+  cursor: move;
+}
+
+.grid-item.is-dragging,
+.grid-item.is-positioning-post-drag {
+  background: #C90;
+  z-index: 2;
+}
+
+.packery-drop-placeholder {
+  outline: 3px dashed hsla(0, 0%, 0%, 0.5);
+  outline-offset: -6px;
+  -webkit-transition: -webkit-transform 0.2s;
+          transition: transform 0.2s;
+}
 
 .left{
   overflow: hidden;
@@ -252,7 +1223,8 @@ div.absolute {
 }
 
 .side-menu {
-  position: fixed;
+  /*position: fixed;*/
+  display:none;
   width: 300px;
   height: 100%;
   background-color: #f8f8f8;
@@ -292,11 +1264,12 @@ div.absolute {
 }
 
 .side-menu .closebtn {
-    position: absolute;
+    /*position: absolute;
     top: 0;
     right: 25px;
+    
+    margin-left: 50px;*/
     font-size: 36px;
-    margin-left: 50px;
 }
 
 #main {
@@ -309,7 +1282,7 @@ div.absolute {
   .side-menu a {font-size: 18px;}
 }
   /* Slide in animation */
- .box {
+  .box {
       float: left;
       width: 50%;
       height: 50%;
@@ -408,10 +1381,7 @@ div.absolute {
   height: 30px;
 }
 
-#runscore{
-  position: relative;
-  left: 35%;
-}
+
 
 .left {
     float: left;
@@ -428,7 +1398,7 @@ div.absolute {
 
 .form-control
 {
-  width: 100%;
+  width: 20%;
 }
 .pull-left {
     float: left !important;
@@ -490,7 +1460,14 @@ div.absolute {
   font-weight: bold;
   text-align: center;
 }
+}
 
+#chart2 svg {
+  max-width: 100%;
+}
+.performance-graph svg, .expectation-graph svg {
+  max-width: 100%;
+}
 
 }
 #chart4 svg {
@@ -517,11 +1494,18 @@ div.absolute {
 #d3-container{
 
   display: none;
+  width:100%;
+  height:100%;
 }
-#chart{
-  width:700px;
-  height:400px;
-  display: none;
+#mbarchart{
+  /*width:700px;
+  height:300px !important;*/
+  width:100%;
+  height:100%;
+  
+}
+.mbarchart svg {
+  max-width: 100%;
 }
 .bar{
   fill: #fe9900;
@@ -531,12 +1515,14 @@ div.absolute {
 text.label{
   fill: #777777;
   color: #777777;
-  font-size: 20px;
+  font-size: 30px;
   font-weight: bold;
 }
 text.category{
   fill: #666666;
   font-size: 14px;
+  font-weight: bold;
+
 }
 
 .nvd3.nv-pie.nv-chart-donut2 .nv-pie-title {
@@ -553,11 +1539,526 @@ text.category{
   display: none;
 }
 
+#g1{
 
+  width:100%;
+}
+
+#g2{
+
+  width:100%;
+}
+
+#g3{
+
+  width:100%;
+}
+
+#g4{
+
+  width:100%;
+}
+
+@media (max-width: 960px) {
+  .allgraphs ul li a {
+    padding: 6px;
+  }
+  .allgraphs ul li a i.fa.fa-tachometer {
+    padding-left: 5px;
+  }
+/*  .tablinks i {
+    padding-left: 5px;
+  }*/
+
+}
+/*@media (max-width: 800px) {
+  .allgraphs .tablinks ul li p {
+    padding-right: 0;
+  }
+  .tabcontent {
+    padding-top: 20px;
+  }
+  .allgraphs ul li a {
+    padding: 10px 4px;
+  }
+  .allgraphs span{
+    padding-left: 7px;
+  }
+/*  .allgraphs ul li a i.fa.fa-tachometer{
+    padding-left: 0;
+  }*/
+
+
+@media (min-width: 768px){
+    #wrapper {
+        padding-left: 300px !important;
+    }
+    #sidebar-wrapper {
+        width: 300px !important;
+    }
+    #wrapper.toggled #sidebar-wrapper {
+       width: 300px !important;
+    }
+    #wrapper.toggled {
+    padding-left: 300px !important;
+}
+}
+
+@media (max-width: 768px){
+.tabcontent {
+    padding-top: 20px;
+  }
+  .adetails{
+    float: none !important;
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 480px){
+  .allgraphs{
+    padding: 15px;
+  }
+  .allgraphs span {
+    font-size: 15px;
+  }
+  .allgraphs ul li a {
+      padding: 5px;
+    }
+
+}
+
+@media (min-width: 769px){
+  .menu-btn-slider {
+    display: none;
+  }
+
+}
+
+/*end-innerstylecss*/
+/*Mystyle-css*/
+#sidebar-wrapper img {
+  width: 100%;
+}
+#sidebar-wrapper .left-menu-nav {
+  width: 100%;
+  float: left;
+}
+@media (min-width: 768px){
+    #wrapper {
+        padding-left: 300px;
+    }
+#sidebar-wrapper {
+    width: 300px;
+    }
+/*    .sidebar .sidebar-wrapper {
+        width: 300px;
+    }*/
+}
+.main-panel .menu-btn-slider {
+    float: left !important;
+    border:1px solid #333;
+    padding: 5px;
+    border-radius: 2px;
+}
+
+.menu-btn-slider:focus, .menu-btn-slider:hover {
+    background-color: transparent !important;
+}
+
+.svg-content-responsive {
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    left: 0;
+}
+
+.ct-legend {
+    position: relative;
+    z-index: 10;
+
+    li {
+        position: relative;
+        padding-left: 23px;
+        margin-bottom: 3px;
+    }
+
+    li:before {
+        width: 12px;
+        height: 12px;
+        position: absolute;
+        left: 0;
+        content: '';
+        border: 3px solid transparent;
+        border-radius: 2px;
+    }
+
+    li.inactive:before {
+        background: transparent;
+    }
+
+    &.ct-legend-inside {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+
+    @for $i from 0 to length($ct-series-colors) {
+        .ct-series-#{$i}:before {
+            background-color: nth($ct-series-colors, $i + 1);
+            border-color: nth($ct-series-colors, $i + 1);
+        }
+    }
+}
 </style>
-	<title> Client Scoring </title>
+ 
 </head>
+
+<!--<script src="https://unpkg.com/draggabilly@2.1/dist/draggabilly.pkgd.min.js"></script>
+<script src="https://unpkg.com/draggabilly@2.1/dist/draggabilly.pkgd.js"></script>-->
+
+
+<!--<body id="page-top" data-spy="scroll" data-target=".navbar-custom"> -->
+
+
+<body>
+
+
+
+<!-- /page loader -->
+
+<div id="page-loader">
+      <div class="loader">
+        <div class="spinner">
+          <div class="spinner-container con1">
+            <div class="circle1"></div>
+            <div class="circle2"></div>
+            <div class="circle3"></div>
+            <div class="circle4"></div>
+          </div>
+          <div class="spinner-container con2">
+            <div class="circle1"></div>
+            <div class="circle2"></div>
+            <div class="circle3"></div>
+            <div class="circle4"></div>
+          </div>
+          <div class="spinner-container con3">
+            <div class="circle1"></div>
+            <div class="circle2"></div>
+            <div class="circle3"></div>
+            <div class="circle4"></div>
+          </div>
+        </div>
+      </div>
+ </div>
+
+
+
+
+
+    <!--
+
+        Tip 1: you can change the color of the sidebar using: data-color="blue | azure | green | orange | red | purple"
+        Tip 2: you can also add an image using data-image tag
+
+    -->
+<div class="wrapper" id="wrapper">
+                      <div class="sidebar"  data-image="assets/img/sidebar-5.jpg" style="background-color:#333333;">
+                          <div class="sidebar-wrapper" id="sidebar-wrapper">
+                                    
+                                    <div class="logo" style="padding-top:24px;">
+                                       <img src="{{ url_for('static', filename='Slice 1.png')}}">
+                                        <a href="http://www.kingcontent.com.au" class="simple-text"></a>
+                                    </div>
+                                      
+                                    </br>
+
+
+                               
+                                    
+                                     <span style="font-size: 180%; color: white; padding-left:25px; font-family: Open Sans Regular;">&#9312; </span><p class="hstyle">Choose a Client </p>
+                                     <div id="clients-container" >
+                                     <select id="clients" class="selectpicker ndesign">
+                                     <option>Loading clients...</option> </select></div>
+                              
+                                   
+
+                                
+                                     <span style="font-size: 180%; color: white; padding-left:25px; font-family:Open Sans Regular;">&#9313;</span> <p class="hstyle">Choose a Profile   <img id="rimg" src="{{ url_for('static', filename='ring.gif')}}" style="background:url({{ url_for('static', filename='ring.gif')}}) no-repeat center center; width: 30px; display:none; padding-bottom: 10px;"></p>
+                                     <div id="profiles-container"><select id="profiles" class="selectpicker ndesign"></select></div>
+
+                                      <span style="font-size: 180%; color: white; padding-left:25px; font-family: Open Sans Regular;">&#9314;</span><p class="hstyle"> Choose a View <img id="simg" src="{{ url_for('static', filename='ring.gif')}}" style="background:url({{ url_for('static', filename='ring.gif')}}) no-repeat center center; width: 30px; display:none; padding-bottom: 10px;"></p>
+                                      <div id="views-container"><select id="views" class="selectpicker ndesign"></select></div>
+
+
+                                      <span style="font-size: 180%; color: white; padding-left:25px; font-family: Open Sans Regular;">&#9315; </span><p class="hstyle">Choose a Segment<img id="timg" src="{{ url_for('static', filename='ring.gif')}}" style="background:url({{ url_for('static', filename='ring.gif')}}) no-repeat center center; width: 30px; display:none; padding-bottom: 10px;"> </p>
+                                      <div id="segment-container"><select id="segments" class="selectpicker ndesign"></select></div>
+
+                                      <span style="font-size: 180%; color: white; padding-left:25px; font-family: Open Sans Regular;">&#9316; </span><p class="hstyle">Select a period</p>
+                                      <div id="reportrange" class="pull-left" style="background: #fff; cursor: pointer; padding: 2px; border: 1px solid #ccc; width: 234px; height: 40px; padding-left: 10‒; border-left-width: 0px; margin-left: 25px; border-right-width: 0px; margin-right: 25px; margin-bottom: 20px; color:black; margin-top:5px;}">
+                                      <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+                                      <span id="rangeValue"></span> <b class="caret"></b></div>
+                                         
+
+                                       <div id="btn">
+                                       <input type="button" id="runscore" class="button"  name="button" value="CALCULATE SCORES" onClick="runscore();setVisibility('toptenarticles','inline');setVisibility('home','none');setVisibility('d3-container','none');setVisibility('faq','none');" style="margin-top: 25px; padding: 4px; width: 243px; height: 56px; padding-left: 10‒; border-left-width: 0px; margin-left: 25px; border-right-width: 0px; margin-right: 25px; margin-bottom: 20px; color:black; background: #FF9050; box-shadow: inset 0px -3px 0px 0px rgba(0,0,0,0.25); border-radius: 4px; ont-family: .HelveticaNeueDeskInterface-Regular; font-size: 20px; color: #FFFFFF; font-weight:bold; }">
+                                       </div>
+
+
+                               
+
+                        
+                        </div>
+                      </div>
+
+
+                <div class="main-panel" id="page-content-wrapper" style="padding:0;">
+
+                                   <nav class="navbar navbar-default navbar-fixed" style="background-color:#ffffff">
+                                       <div class="container-fluid">
+
+
+                                                                    <button type="button" class="navbar-toggle menu-btn-slider" id="menu-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                                                                      <span class="sr-only">Toggle navigation</span>
+                                                                      <span class="icon-bar"></span>
+                                                                      <span class="icon-bar"></span>
+                                                                      <span class="icon-bar"></span>
+                                                                    </button>
+
+
+
+
+                                          <div class="collapse navbar-collapse">
+                                        
+                                            <ul class="nav navbar-nav navbar-left">
+                                                <li>
+                                                   <a href="#home"  onClick="setVisibility('home','inline');setVisibility('faq','none');setVisibility('toptenarticles','none');setVisibility('allgraphs','none');" style="font-family:sans-serif !important;font-size:18px !important;">
+                                                       Home
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#faq" onClick="setVisibility('faq','inline');setVisibility('toptenarticles','none');setVisibility('allgraphs','none');setVisibility('home','none')" style="font-family:sans-serif !important; font-size:18px !important;">
+                                                        Help
+                                                    </a>
+                                                </li>
+                                            </ul>
+
+                                          </div>
+                                          </div>
+                                       
+                                     </nav>
+
+
+                                                    <div id="home">
+
+                                                    <center><img src="{{ url_for('static', filename='homes.png')}}" style="padding-top:120px;"></center>
+
+                                                    
+                                                     </div>
+                                       
+                                         <div id="toptenarticles" style="display:none; background-color:">
+                                          <div id="tocntent" style="margin-top:20px; padding-left:30px;">
+                                          <i class="fa fa-bar-chart fa-2x" aria-hidden="true"></i> <p style="font-family:sans-serif;font-size: 26px;color: #666666;letter-spacing: -0.37px;display:inline-block; margin-bottom:0px;"> &nbsp;&nbsp; &nbsp;&nbsp; TOP 10 ARTICLES</p>
+                                          </div>
+                                         <div id="graphs" align="center" style="padding-top:60px;background-color:white; height:100%; dispaly:inline; border:20px solid #F0F0F0;">
+                                         <div id="limg" style="background:url({{ url_for('static', filename='ring.gif')}}) no-repeat center center; width:100px; height:100px;"> </div>
+                                         <div id="d3-container"> </div>              
+                                         </div>
+                                       
+                                       </div>
+
+
+                        <div id="allgraphs" style="display:none; border:20px solid #F0F0F0;"> 
+
+                                  <ul class="tab">
+                                 
+                                   <li><a href="javascript:void(0)" class="tablinks" onclick="setVisibility('allgraphs','none');openData(event, 'toptenarticles');" style="color:#ff9050;"><i class="fa fa-chevron-left" aria-hidden="true"></i> <p style="font-family: .HelveticaNeueDeskInterface-Regular;font-size: 18px;color: #ff9050;letter-spacing: -0.37px;display:inline-block;">&nbsp; Back</p></a></li> 
+
+                                  <li ><a id="gtest" href="javascript:void(0)" class="tablinks" onclick="openData(event, 'gdetails')" ><i class="fa fa-tachometer fa-lg" style="font-size:1.533333em;"aria-hidden="true"></i>
+                                  <p style="font-family: .HelveticaNeueDeskInterface-Regular;font-size: 18px;color: #666666;letter-spacing: -0.37px;display:inline-block;" >&nbsp; &nbsp;&nbsp;&nbsp;GOOGLE ANALYTICS</p></a></li>
+
+
+                                  <li>
+
+                                    <a href="javascript:void(0)" class="tablinks" onclick="openData(event, 'cq')">
+                                    <i class="fa fa-pie-chart fa-lg" style="font-size:1.533333em;" aria-hidden="true"></i>
+
+                                    <p style="font-family: .HelveticaNeueDeskInterface-Regular;font-size: 18px;color: #666666;letter-spacing: -0.37px;display:inline-block;">&nbsp; &nbsp;&nbsp;&nbsp; CQ DATA</p>
+
+                                    </a>
+
+                                  </li>
+
+                                  </ul>
+
+                                  <div id="detailstuff" style="background-color:#FFFFFF;">
+
+                                    <div id="gdetails" class="kcs tabcontent" style="padding-top:40px;">
+                                      
+                                      <div id="adetails" style="font-size:24px; padding-left:15px;font-family:sans-serif !important;font-style:bold;"></div>
+                                          <div class="container-fluid">
+                                                        <div class="row" style="padding-top:20px;">
+                                                            <div class="col-sm-6">
+                                                            <div class="panel panel-default">
+                                                              <div class="panel-heading"><center><b>Performance Vs Expectations</b></center>
+                                                              </div>
+                                                                   <div class="panel-body" >
+
+                                                                    <div class="ct-chart ct-octave"></div>
+                                                                     
+                                                                     <!---->
+
+                                                                      <!--<div id="mbarchart" class="mbarchart">
+                                                                        <svg preserveAspectRatio="xMidYMid meet"></svg> -->
+                                                                        </div>
+                                                                   </div>
+                                                            </div>
+                                                         
+
+                                                          <div class="col-sm-6">
+                                                            <div class="panel panel-default">
+                                                              <div class="panel-heading"><center><b>% Increase and decrease of Metrics</b></center></div>
+                                                                   <div class="panel-body">
+                                                                        <div class="ct-chart2 ct-octave">
+                                                                    </div>
+                                                            </div>
+                                                          </div>
+                                                          </div>
+
+                                                         </div>
+                                                        </div>
+
+                                                  <div class="container-fluid">
+                                                      <div class="row" style="height:250px;">
+                                                                  <div class="col-sm-6">
+                                                                  <div class="panel panel-default">
+                                                                    <div class="panel-heading"><center><b>Bounce Rate</b></center></div>
+                                                                         <div class="panel-body" style="height:250px;" >
+                                                                          
+                                                                              <div class="row" style="height:250px;">
+                                                                                  <div class="col-sm-6" >
+                                                                                     
+                                                                                        
+                                                                                              
+                                                                                              <div id="g2" class="gauge"></div>
+                                                                                              
+                                                                                       
+                                                                                     </div>
+
+                                                                                  <div class="col-sm-6">
+                                                                                      
+                                                                                      
+                                                                                             
+                                                                                                <div id="g3" class="gauge"></div>
+                                                                                               
+                                                                                            
+                                                                                        </div>
+                                                                                  </div>
+                                                                                </div>
+                                                                          </div>
+                                                                  </div>
+                                                                  <div class="col-sm-6">
+                                                                    <div class="panel panel-default">
+                                                                      <div class="panel-heading"><center><b>Time on Page</b></center></div>
+                                                                           <div class="panel-body" style="height:250px;">
+                                                                                <div class="row" style="height:250px;">
+                                                                                    <div class="col-sm-6">
+                                                                                       
+
+                                                                                               
+                                                                                             <div id="g1" class="gauge"></div>
+
+                                                                                          </div>     
+                                                                                    <div class="col-sm-6">
+                                                                                              <div id="g4" class="gauge"></div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                    </div>
+                                                                  </div>
+                                                                </div>
+                                                  </div>
+                                    </div>
+                                     <div id="cq" class="tabcontent">
+                                      
+                                      </div>
+                                  </div>
+                      </div>
+
+
+                          <div id="faq" class="faq" style="display:none;">
+                          <div id="kcsimg">
+                              <center><img src="{{ url_for('static', filename='KingContentScores.png')}}" style="width: 840px; padding-top:120px;"></center>                                                        
+                          </div>
+
+                        <div class="container">
+                          <div>
+                          
+                        </div>
+                      </div>
+                          </div>
+
+
+
+                </div>
+
+ </div>
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/modernizr.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/modernizr.custom.js') }}"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.1.5/angular.min.js"></script>
+
+<script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.5.0/d3.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/nvd3/1.1.13-beta/nv.d3.min.js"></script>
+<script src="http://cmaurer.github.io/angularjs-nvd3-directives/lib/angularjs-nvd3-directives/dist/angularjs-nvd3-directives.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+<script src="https://unpkg.com/packery@2.1/dist/packery.pkgd.js"></script>
+<script src="https://unpkg.com/packery@2.1/dist/packery.pkgd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.bundle.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.5.0/lodash.min.js"></script>
+<script src="https://cdn.jsdelivr.net/lodash/4.15.0/lodash.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/gridstack.js/0.2.6/gridstack.min.js"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/guage.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/chartist.js') }}"></script>
+<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.min.js"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/raphael-2.1.4.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/justgage.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/velocity.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/velocity.ui.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.easing.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/scrolling-nav.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.mb.YTPlayer.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.sticky.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/slippry.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.flexslider-min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/morphext.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.easing.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.scrollTo.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.appear.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/stellar.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/wow.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/owl.carousel.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/nivo-lightbox.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.nicescroll.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/custom.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/adpack.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/typed.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/chartist-plugin-legend.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/chartist-plugin-tooltip.js') }}"></script>
+
+
+
+
+
 <script type="text/javascript">
+
 
 
 
@@ -567,48 +2068,67 @@ var g3=null;
 var g4=null;
 
 
-  function scrolld(){
-                                  $('html, body').animate({
-                                  scrollTop: $("#gdetails").offset().top
-                                    }, 500);
-                                  }
+ $(function(){
+      $("#typed").typed({
+        //strings: ["transforms data into action. ^1500", "scores content. ^1000","makes content marketing great. ^1000"],
+        stringsElement:$('#typed-strings'),
+        typeSpeed: 100,
+        backDelay:800,
+        loop:true,
+        contentType: 'html'
 
-function ButtonText() {
-    $("button").text(function(i, v){
-               return v === 'CQ Data' ? 'Call graphs' : 'CQ Data'
-            })
+    //  back-dekay : 500
+      });
+  });
+
+
+function openData(evt, cityName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(cityName).style.display = "block";
+    evt.currentTarget.className += " active";
 }
 
-ButtonText();
-$("button").click(function () {
-    $("#gdetails").animate({width: 'toggle'},
-    {
-    duration: 1500,
-    specialEasing: {
-      width: "linear"
-    }}
-    );
+function tabactive(evt,tabname)
+{
+  //tablinks = document.getElementsByClassName("tablinks");
 
-    $("#cq").animate({width: 'toggle'},{
-    duration: 1500,
-    specialEasing: {
-      width: "linear"
-    }});
-    ButtonText();
+   document.getElementById(tabname).style.display = "block";
+  evt.currentTarget.className += " active"
+   
+  //document.getElementById(tabname).style.display = "block";
+  //evt.currentTarget.className += " active";
+
+}
+
+(function() {
+
+        [].slice.call( document.querySelectorAll( '.tabs' ) ).forEach( function( el ) {
+          new CBPFWTabs( el );
+        });
+
+      })();
+
+
+$(document).scroll(function(){
+    $("#scrollHeight").html($(document).scrollTop());
 });
 
 
-function openNav() {
-    document.getElementById("mysidemenu").style.width = "250px";
-   // document.getElementById("main").style.marginLeft = "250px";
-    //document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
-}
 
-function closeNav() {
-    document.getElementById("mysidemenu").style.width = "0";
-    //document.getElementById("main").style.marginLeft= "0";
-    //document.body.style.backgroundColor = "white";
-}
+$(document).ready(function () {
+    $('.gdetails').click(function () {
+        $('.tablinks li:first').addClass('active');
+    });
+});
+
 
 function showDiv() {
    document.getElementById('hide').style.display = "block";
@@ -621,82 +2141,158 @@ document.getElementById(id).style.display = visibility;
 
 
 window.onload=function(){
-  document.getElementById("runscore").style.display='none';
-  document.getElementById("reportrange").style.display='none';
-  document.getElementById("kcsimg").style.display='none';
+  //document.getElementById("runscore").style.display='none';
+ //document.getElementById("reportrange").style.display='none';
+  //document.getElementById("kcsimg").style.display='none';
 
 }
 $(document).ready(function() {
 			loadClients();
+    
+      console.log("S1 step");
+    
 		})
 		
 		loadClients = function(){
+
 			$.ajax({
 				type: 'GET',
 				url: '/clients',
 				success: generateClientDropdown
 			})
 		}
-		
+
+     
+
+
 generateClientDropdown = function(result) {
 		var html = '';
-			$('#clients').html('<option>Choose a client<option>');
+			$('#clients').html('<option>Please select<option>');
 			for (var i=0; i < result.results.items.length; i++) {
 				var clientObj = result.results.items[i];
 				$('#clients').html($('#clients').html() + '<option value="' + clientObj.id + '">' + clientObj.name + '</option>');
+        $('#clients option:selected').css('background-color');
+
+       
+
 			}
 			
 			$('#clients').change(function() {
 				var option = $(this).find('option:selected').val();
-				$('#profiles-container').html('<select id="profiles" class="form-control"><option>Loading profiles...</option></select>');
+				$('#profiles-container').html('<select id="profiles" class="ndesign"><option>Loading profiles...</option></select>');
+         $('#clients').css('background-color','white');
+
+
+        
 				$.ajax({
 					type: 'GET',
 					url: '/profile',
 					data:{'clientid':option},
-					success: [generateProfileDropdown]
+          beforeSend:function(){
+            $('#rimg').show();
+          },
+					success: [generateProfileDropdown],
+            complete: function(){
+            $('#rimg').hide();
+          } 
 				});
 			});
 		}
 		
 generateProfileDropdown = function(result) {
 			var html = '';
-			$('#profiles').html('<option>Choose a profile</option>');
+			$('#profiles').html('<option >Please Select</option>');
 			for (var i=0; i < result.results.items.length; i++) {
 				var profileObj = result.results.items[i];
-				$('#profiles').html($('#profiles').html() + '<option value="' + profileObj.accountId + '">'+ profileObj.name + '</option>');
-				//console.log(profileObj);
+				$('#profiles').html($('#profiles').html() + '<option value="' + profileObj.accountId + ':' + profileObj.id +'">'+ profileObj.name + '</option>');
+         $('#pname').html('<h6>' + profileObj.name + '</h6>');
+         
 			}
-			
+			//console.log(profileObj);
 			$('#profiles').change(function() {
-				var option = $(this).find('option:selected').val();
-				$('#views-container').html('<select id="views" class="form-control"><option>Loading views...</option></select>');
+				var option = $(this).find('option:selected').val();//document.getElementById('profiles').value;//
+       //var option = event.target.value;
+				$('#views-container').html('<select id="views" class="ndesign"><option>Loading views...</option></select>');
+
+        //console.log(profileObj.accountId);
+        //console.log(profileObj.id);
+        option1=option.split(":")
+        //console.log(option1[0]);
+         //console.log(option1[1]);
+        //console.log(option);
+        //$('#rimg').show();
 				$.ajax({
 					url: '/views',
-					data: {'dprofile':profileObj.accountId,'wp':profileObj.id},
+					data: {'dprofile':option1[0],'wp':option1[1]},
 					type: 'GET',
-					success: [generateViewDropdown]
+            beforeSend:function(){
+            $('#simg').show();
+          },
+
+					success: [generateViewDropdown],
+            complete: function(){
+           $('#simg').hide();
+          } 
 				});
-			});			
+			});	
+
 		}
 
 
+
+
 generateViewDropdown = function(result) {
+
 			var html = '';
-			$('#views').html('<option>Choose a View</option>');
+			$('#views').html('<option>Please Select</option>');
 			for (var i=0; i < result.results.items.length; i++) {
 				var viewObj = result.results.items[i];
 
 				$('#views').html($('#views').html() + '<option value="' + viewObj.id + '">' + viewObj.name + '</option>');
+
       }
 
+      var prname = $("#profiles").find('option:selected').text();
+       var reg = /[:.*+?^${}()|[\]\\\s\/-]/g
+       prname=prname.replace(reg,"");
+      //var psname = prname.replace("\/\/","");
+      //var psname = prname.replace("/[^a-zA-Z0-9_-]+/g", "hello");
+     // var psname = prname.replace("[.*+?^${}()|[\]\\\s\/]","fuck");
+     // console.log(typeof prname);
+      console.log("prname"+ prname);
+
+      //var test1="h xrdik.good.  boy://fuck:_the free world";
+     
+      ///var ftest=test1.replace("/[.*+?^${}()|[\]\\\s\/]/g","");
+      //var ftest=test1.match(reg);
+      //test1=test1.replace(reg,"");
+      //console.log(test1);
       $('#views').change(function(){
         //console.log("trial");
+
         $("#runscore").show();
         $("#reportrange").show();
+        $("#reportrange").css('display','inline-block');
+
+
       });
 
+        
 
-	 }
+       $.ajax({
+          url: '/segments',
+          data: {'prname':prname},
+          type: 'GET',
+            beforeSend:function(){
+            $('#timg').show();
+          },
+
+          success: [generateSegTable],
+            complete: function(){
+           $('#timg').hide();
+          } 
+        });
+      } 
 
 $(function() {
 
@@ -707,6 +2303,7 @@ $(function() {
         $('#reportrange span').html(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'));
          var startd = start.format('YYYY-MM-DD');
          var endd = end.format('YYYY-MM-DD');
+         console.log("1 model working ");
     }
 
     $('#reportrange').daterangepicker({
@@ -721,12 +2318,12 @@ $(function() {
            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         }
     }, cb);
-
+    console.log("2nd model working");
     cb(start, end);
     
 });
 
-		
+	
 generateScoresTable = function(result) {
 			var html = '<table id="scores-table"><br><tr><th>Page</th><th>Score</th></tr>';
 			var parsed=JSON.parse(result.results);
@@ -739,10 +2336,38 @@ generateScoresTable = function(result) {
 			$('#scores-container').html(html);
 		}
 
+generateSegTable = function(result) {
+     var html = '';
+     console.log("plan ga");
+     //var parsed=JSON.parse(result.results);
+     //console.log(parsed);
+     console.log(result.results);
+      $('#segments').html('<option>Please select<option>');
+
+      for (var i=0; i < result.results.length; i++) {
+        var segments = result.results[i];
+        $('#segments').html($('#segments').html() + '<option value="' + segments.id + '">' + segments.name + '</option>');
+        $('#segments option:selected').css('background-color');
+
+    }
+
+       $('#segments').change(function() {
+        var option = $(this).find('option:selected').val();
+        console.log(option);
+
+        //$('#profiles-container').html('<select id="profiles" class="ndesign"><option>Loading profiles...</option></select>');
+         //$('#clients').css('background-color','white');
+
+       });
+
+
+
+
+  }
 
 function benchmark(){
 
-
+  
 	var bstartd = moment(startd);
                 bstartd.add(-90,'days');
               bstartd.format("YYYY-MM-DD");
@@ -750,6 +2375,8 @@ function benchmark(){
 	var bendd = moment(endd);
                 bendd.add(-1,'days');
                 bendd.format("YYYY-MM-DD");
+
+                console.log("3rd model working");
 }
 
 function runscore(result) {
@@ -760,6 +2387,7 @@ var html = '';
        // d3.select("#chart").selectAll("svg").remove();
        // var data=JSON.parse(result.results);
         //console.log(viewid);
+        console.log("one mored date trial");
 				var dateRange = document.getElementById("rangeValue").innerHTML;
                 var split = dateRange.split(" - ");
                 var startd = split[0].trim();
@@ -768,27 +2396,35 @@ var html = '';
 				var bstartd = moment(startd);
                 bstartd.add(-90,'days');
               	bstartd.format("YYYY-MM-DD");
-              	//console.log(bstartd);
+              	console.log(bstartd);
               	var bs=bstartd.format("YYYY-MM-DD");
-              	//console.log(bs);
+              	console.log(bs);
 
 				var bendd = moment(endd);
                 bendd.add(-1,'days');
                 bendd.format("YYYY-MM-DD");
                 var be=bendd.format("YYYY-MM-DD");
-                //console.log(be);
-                //console.log(bendd);
+                console.log(be);
+                console.log(bendd);
+
+        //var segid=document.getElementById("segments").innerHTML;
+        var segid=$('#segments').find('option:selected').val();
+        console.log(segid);
+
           var proc = new Date().getTime();
+
 				$('#scores-container').html(' ');
         $('#limg').show();
 				$.ajax({
 					url: '/prog',
-					data: {'profileid':viewid,'bstartd':bs,'bendd':be,'startd':startd,'endd':endd},
+					data: {'profileid':viewid,'bstartd':bs,'bendd':be,'startd':startd,'endd':endd,'sid':segid},
 					type: 'GET',
 					success: [generated2graph],
           complete: function(){
             $('#limg').hide();
           } 
+
+
            
 
 				});	
@@ -801,19 +2437,23 @@ function AJAXSuccessFunction() {
 }
 
 
-
-
 generated2graph=function(result){
 
   var setup = function(targetID){
   
+
   //Set size of svg element and chart
   setVisibility('d3-container', 'inline');
-  var margin = {top: 0, right: 0, bottom: 0, left: 0},
+  var margin = {top: 0, right: 0, bottom: 0, left: 100},
     width = 700 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom,
+    height = 630 - margin.top - margin.bottom,
     categoryIndent = 4*15 + 5,
     defaultBarWidth = 2000;
+
+   var barHeight=30;
+   var barPadding=30;
+   var axisMargin=25;
+   var leftMargin=12;
 
 
   //Set up scales
@@ -821,17 +2461,21 @@ generated2graph=function(result){
   var x = d3.scale.linear()
     .domain([0,defaultBarWidth])
     .range([0,width]);
-  var y = d3.scale.ordinal()
-    .rangeRoundBands([0, height], 0.1, 0);
+
+var gap=5;
+    var y = d3.scale.ordinal()
+    .rangeRoundBands([0, height+2*gap], 0.1, 0.1);
+
 
   //Create SVG element
   d3.select(targetID).selectAll("svg").remove()
   var svg = d3.select(targetID).append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
+    .attr("width", width + margin.left + margin.right + 40)
+    .attr("height", (height + gap * 1) + margin.top + margin.bottom)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-  
+
+
   //Package and export settings
   var settings = {
     margin:margin, width:width, height:height, categoryIndent:categoryIndent,
@@ -867,7 +2511,9 @@ var redrawChart = function(targetID, newdata) {
 
   //Create chart row and move to below the bottom of the chart
   var chartRow = svg.selectAll("g.chartRow")
-    .data(newdata, function(d){ return d.pageTitle});
+    .data(newdata, function(d){ return d.pageTitle})
+    .style("fill", function(d, i){return d>70?"red":"steelblue";});
+
   var newRow = chartRow
     .enter()
     .append("g")
@@ -875,41 +2521,291 @@ var redrawChart = function(targetID, newdata) {
     .attr("transform", "translate(0," + height + margin.top + margin.bottom + ")")
     .on("click",function(d){
 
-                                 //window.scrollBy(0, 50);
-                                 //var x=$(window).height();   // returns height of browser viewport
-                                  //var y=$(document).height(); // returns height of HTML document
-                                  //var z=$(window).width();
-                                   // $("body").animate({"scrollTop": window.scrollY+(z-30)}, 1000);
-                                   
-                                   // returns width of browser viewport
-                                  //$(document).width(); 
-                                    //                       console.log("height" + x);
-                                      //                     console.log(y);
-                                        //                   console.log(z);  
+                            //showDiv();
+                            //document.getElementById("defaultOpen");
+                           //openData(event, 'gdetails');
+                            openData( event,'gdetails' );
 
+                            //window.alert("test");
                             
-                            showDiv();
-                            setVisibility('gdetails', 'inline');
-                            setVisibility('chart', 'inline');
-                            setVisibility('chart2', 'inline');
-                            setVisibility('linkks', 'inline');
+                            //tabactive(event,'gdetails');
+                            setVisibility('allgraphs','inline-block');
+                            setVisibility('toptenarticles','none');
+                            //setVisibility('gdetails', 'inline');
+                            //setVisibility('mbarchart', 'inline');
+                            //setVisibility('chart2', 'inline');
+                           // setVisibility('linkks', 'inline');
 
-                           
+                          
 
-                            //d3.select("#chart").selectAll("svg").remove()
                             data1=d3.select(this);
                             data1=d;
 
+                            console.log(d.oms);
+
+                            /*var s=d.oms;
+                            if (s == d.oms)
+                            {*/
+                              //$('#adetails').html($('#adetails').html()  + d.oms +'&nbsp'+ d.pageTitle );
+                             // window.alert($('#adetails').html());
+                              $('#adetails').html(d.oms +'&nbsp'+ d.pageTitle ); 
+
+
+
+
+
+
+
+
+                              
+
+
+
+                            var responsiveOptions = [
+                              // Over 300px, we change the bar distance and show the first three letters of the weekdays
+                              ['screen and (min-width: 300px)', {
+                                seriesBarDistance: 18,
+                                axisX: {
+                                  labelInterpolationFnc: function(value) {
+                                    return value.slice(0, 3);
+                                  },
+                                  showGrid: false,
+
+                                  showLabel: true
+                                },
+
+                                axisY: {
+
+                                  showGrid: false
+                                }
+
+                              }],
+                              // Over 600px, we increase the bar distance one more time and show the full weekdays
+                              ['screen and (min-width: 600px)', {
+                                seriesBarDistance: 50,
+                                axisX: {
+                                  labelInterpolationFnc: function(value) { return value; }
+                                }
+                              }],
+
+
+                            ];
+
+
+                       var chart1 =   new Chartist.Bar('.ct-chart', {
+                          
+                                                      labels: ['Sessions', 'Users', 'Pageviews', 'Unique Pageviews'],
+                                                      series: [ 
+                                                      
+                                                      [
+
+                                                      { meta:'Performance', value:data1.sessions},
+                                                      { meta:'Performance', value:data1.users},
+                                                      { meta:'Performance', value:data1.pageviews},
+                                                      { meta:'Performance', value:data1.uniquePageviews}
+
+                                                      ],
+                                                      [
+
+                                                      {meta:'Expectation',value: data1['B.Sessions']},
+                                                      {meta:'Expectation', value: data1['B.Users']},
+                                                      {meta:'Expectation', value: data1['B.PageViews']},
+                                                      {meta:'Expectation', value: data1['B.UniquePVS'] }
+
+                                                      ]
+
+                                                    ]
+
+                                                    },
+
+                                                    {
+                              seriesBarDistance: 6,
+                              axisX: {
+                                showGrid: false,
+                                // Only return first letter of weekday names
+                                labelInterpolationFnc: function(value) {
+                                  return value[0];
+                                }
+                              },
+
+                              plugins: [
+      Chartist.plugins.tooltip()
+    ]
+                            }, responsiveOptions );
+
+        
+                                    chart1.on('draw', function(data) {
+                                          if(data.type === 'bar') {
+                                            data.element.animate({
+                                              y2: {
+                                                dur: 1000,
+                                                from: data.y1,
+                                                to: data.y2,
+                                                easing: Chartist.Svg.Easing.easeOutQuint
+                                              },
+                                              opacity: {
+                                                dur: 1000,
+                                                from: 0,
+                                                to: 1,
+                                                easing: Chartist.Svg.Easing.easeOutQuint
+                                              }
+                                            });
+                                          }
+                                        });
+
+
+                                      
+
+                                      sessionsincrease=data1.sessions-data1['B.Sessions'];
+                                      pageviewsincrease=data1.pageviews-data1['B.PageViews'];
+                                      uniquePageviewsincrease=data1.uniquePageviews-data1['B.UniquePVS'];
+                                      usersincrease=data1.users-data1['B.Users'];
+                                      brincrease=data1.bounceRate-data1['B.BounceRate'];
+                                      topincrease=data1.avgTimeOnPage-data1['B.TOP'];
+
+                                                                
+                                      var data = {
+                                      labels: ['Sessions', 'Users', 'Pageviews', 'Unique Pageviews', 'Bounce Rate', 'Time On Page'],
+                                      series: [
+                                        [
+                                        Math.round((sessionsincrease/data1['B.Sessions'])*100),
+                                        Math.round((usersincrease/data1['B.Users'])*100), Math.round((pageviewsincrease/data1['B.PageViews'])*100), Math.round((uniquePageviewsincrease/data1['B.UniquePVS'])*100),Math.round((brincrease/data1['B.BounceRate'])*100),Math.round((topincrease/data1['B.TOP'])*100)]
+                                      ]
+                                    };
+
+
+
+                            var responsiveOptions2 = [
+                              // Over 300px, we change the bar distance and show the first three letters of the weekdays
+                              ['screen and (min-width: 300px)', {
+                                seriesBarDistance: 18,
+                                axisX: {
+                                  labelInterpolationFnc: function(value) {
+                                    return value.slice(0, 3);
+                                  },
+                                  showGrid: false,
+
+                                  showLabel: true
+                                },
+
+                                axisY: {
+
+                                  showGrid: false
+                                }
+
+                              }],
+                              // Over 600px, we increase the bar distance one more time and show the full weekdays
+                              ['screen and (min-width: 600px)', {
+                                seriesBarDistance: 50,
+                                axisX: {
+                                  labelInterpolationFnc: function(value) { return value; }
+                                }
+                              }],
+
+
+                            ];
+
+                                   /* var optionss = {
+                                      //high: 100,
+                                      //low: -100,
+                                      axisX: {
+
+                                         showGrid : false
+                                        labelInterpolationFnc: function(value, index) {
+                                          return index % 2 === 0 ? value : null;
+                                        }
+                                      }
+                                    };*/
+                                   var chart2 = new Chartist.Bar('.ct-chart2', data, {   plugins: [
+      Chartist.plugins.tooltip()
+    ]},responsiveOptions2);
+
+
+                                       chart2.on('draw', function(data) {
+                                          if(data.type === 'bar') {
+                                            data.element.animate({
+                                              y2: {
+                                                dur: 1000,
+                                                from: data.y1,
+                                                to: data.y2,
+                                                easing: Chartist.Svg.Easing.easeOutQuint
+                                              },
+                                              opacity: {
+                                                dur: 1000,
+                                                from: 0,
+                                                to: 1,
+                                                easing: Chartist.Svg.Easing.easeOutQuint
+                                              }
+                                            });
+                                          }
+                                        });
+
+
+
+
+
+
+
+
+
+
+                              
+                            /*var $tooltip = $('<div class="tooltip tooltip-hidden"></div>').appendTo($('.ct-chart'));
+ 
+                              $(document).on('mouseenter', '.ct-point', function() {
+                                var seriesName = $(this).closest('.ct-series').attr('ct:series-name'),
+                                    value = $(this).attr('ct:value');
+                                
+                                $tooltip.text(seriesName + ': ' + value);
+                                $tooltip.removeClass('tooltip-hidden');
+                              });
+
+                              $(document).on('mouseleave', '.ct-point', function() {
+                                $tooltip.addClass('tooltip-hidden');
+                              });
+
+                              $(document).on('mousemove', '.ct-point', function(event) {
+                                console.log(event);
+                                $tooltip.css({
+                                  left: (event.offsetX || event.originalEvent.layerX) - $tooltip.width() / 2,
+                                  top: (event.offsetY || event.originalEvent.layerY) - $tooltip.height() - 20
+                                });
+                              });
+*/
+
+
+
+
+                              
+                              
+                              /*myBarChart.resize();*/
+
+
+                              //document.getElementById('adetails')=d.pageTitle;
+                                                            //window.location.reload();                              
+                            /*}
+                            else
+                            {
+                            
+                            setVisibility('adetails','none');
+
+                            }*/
+
+
+
+
+                         
+
+
+
+                           
+                        /*  nv.addGraph(function(){
+
+                            
                             
 
-
-
-                            /* var margin = {top: 0, right: 0, bottom: 0, left: 20},
-                            width = 700 - margin.left - margin.right,
-                            height = 400 - margin.top - margin.bottom;*/
-                            //adding Performance Vs Expectations chart
-                            var chart = nv.models.multiBarHorizontalChart() 
-                            .margin({top: 30, right: 10, bottom: 30, left: 140})
+                            var chart = nv.models.multiBarHorizontalChart()
+                            .margin({top:30, right: 10, bottom: 30, left: 140}) 
                             .x(function(d) { return d.x })
                             .valueFormat(d3.format(".0f"))
                             .y(function(d) { return d.y })
@@ -926,8 +2822,8 @@ var redrawChart = function(targetID, newdata) {
                             chart.yAxis.tickFormat(d3.format(',f'));
 
                              chart.yAxis.tickPadding(3);
-                            chart.xAxis.tickPadding(3);
-                           // console.log("enter");
+                             chart.xAxis.tickPadding(3);
+                          
                               sessionsincrease=data1.sessions-data1['B.Sessions'];
                               pageviewsincrease=data1.pageviews-data1['B.PageViews'];
                               uniquePageviewsincrease=data1.uniquePageviews-data1['B.UniquePVS'];
@@ -936,19 +2832,14 @@ var redrawChart = function(targetID, newdata) {
                               topincrease=data1.avgTimeOnPage-data1['B.TOP'];
 
 
-                //d3.select("#d3-container").select("svg").remove();
-                //function 
-                             /*d3.select('#chart svg')
-                            .append("text")
-                            .attr("x", width/2)             
-                            .attr("y", 20)
-                            .attr("text-anchor", "middle")  
-                            .style("font-size", "16px"); 
-                            //.text("Performance Vs Benchmark");*/
+             
+                          d3.select('#mbarchart svg')
+                           .attr('width',700)
+                            .attr('height',300)
+                            //.attr('viewBox','0 0 700 300')
+                            //.attr('preserveAspectRatio', 'xMinYMin meet')
+                           // .attr('transform','translate')
 
-                          d3.select('#chart svg')
-                           .attr('width',width)
-                            .attr('height',height)
                             .datum([
                         {
                             key: "Performance",
@@ -976,23 +2867,20 @@ var redrawChart = function(targetID, newdata) {
                           },
                         ]).transition().duration(1500)
                             .call(chart)
-                           
-
-
-                          
-                           // console.log(((data1.avgTimeOnPage)/60)*10);
-                           // console.log((data1.avgTimeOnPage)/60);
-                           // console.log(((data1.avgTimeOnPage)/60)/10);
 
                             nv.utils.windowResize(chart.update);
+                            //nv.utils.windowResize(function(){ chart.update(); });
+
                              // console.log("exit"); 
 
+                            return chart;
 
+                          }); 
 
-                          nv.addGraph(function() {
+                        nv.addGraph(function() {
                             var margin = {top: 0, right: 0, bottom: 0, left: 0},
                             width = 700 - margin.left - margin.right,
-                            height = 400 - margin.top - margin.bottom;
+                            height = 300 - margin.top - margin.bottom;
                           var chart = nv.models.discreteBarChart()
                           .x(function(d) { return d.label })    //Specify the data accessors.
                           .y(function(d) { return d.value })
@@ -1005,11 +2893,7 @@ var redrawChart = function(targetID, newdata) {
                                               
                             chart.yAxis.tickPadding(3);
                             chart.xAxis.tickPadding(3);
-                          //d3.svg.axis().tickFormat(function(d) { return d + "%"; });
-                          //yAxis().tickFormat(function(d) { return d + "%"; });
-
-                          //chart.yAxis.tickFormat(function(d) { return d3.format("0%"); });
-                          //chart.xAxis.tickFormat(function(d) { return d + "%"; });
+                        
                           chart.yAxis.tickFormat(d3.format("0%"));
 
 
@@ -1054,147 +2938,67 @@ var redrawChart = function(targetID, newdata) {
                           }])
                           .transition().duration(1500)
                           .call(chart);
-                         /* .append("text")
-                            .attr("x", width/2)             
-                            .attr("y", 10)
-                            .attr("text-anchor", "middle")  
-                            .style("font-size", "16px") 
-                            .text("% Increase and Decrease of Metrics");*/
+                     
 
                           nv.utils.windowResize(chart.update);
 
                           return chart;
-                          });
-
-                          
-                          //Regular Pie Chart
-
-                       /*   nv.addGraph(function() {
-                          var margin = {top: 0, right: 0, bottom: 0, left: 0},
-                          width = 500 - margin.left - margin.right,
-                          height = 500 - margin.top - margin.bottom;
-                          var chart = nv.models.pieChart()
-                              .x(function(d) { return d.label })
-                              .y(function(d) { return d.value })
-                              .tooltips(false)
-                              .labelType("value")
-                              .showLabels(true);
-
-                            chart.pie.pieLabelsOutside(false).labelType("percent");
-
-
-                            d3.select("#chart3 svg")
-                                .attr('width',width)
-                                .attr('height',height)
-                                .datum([{"label":"Performance","value":data1.bounceRate},{"label":"Benchmark","value":data1['B.BounceRate']}])
-                                .transition().duration(350)
-                                .call(chart);
-
-                          return chart;
-                        });
-
-
-                          //Donut chart
-                          nv.addGraph(function() {
-                                var margin = {top: 0, right: 0, bottom: 0, left: 0},
-                                width = 500 - margin.left - margin.right,
-                                height = 500 - margin.top - margin.bottom;
-                                var chart = nv.models.pieChart()
-                                .x(function(d) { return d.label })
-                                .y(function(d) { return d.value })
-                                .showLabels(true)     //Display pie labels
-                                .showLegend(false)    // Hide Legend
-                                .labelThreshold(.05)  //Configure the minimum slice size for labels to show up
-                                .labelType("value") //Configure what type of data to show in the label. Can be "key", "value" or "percent"
-                                .tooltips(false)
-                                //.color(d3.scale.category20().range().slice(10))
-                                .donut(true)          //Turn on Donut mode. Makes pie chart look tasty!
-                                .donutRatio(0.35)     //Configure how big you want the donut hole size to be.
-                                  ;
-                                //.titleOffset(-30)
-                                //.title("woot");
-                                //.title("Time on page")
-                                
-                               
-                                //chart.labelType(function(d, i){ return d.label + d.value; })
-
-
-                                    chart.pie
-                                    .startAngle(function(d) { return d.startAngle/2 -Math.PI/2 })
-                                    .endAngle(function(d) { return d.endAngle/2 -Math.PI/2 });
-
-                                    //chart.pie.pieLabelsOutside(false);
+                          }); */
 
 
 
-                             function centerText() {
-                                  return function() {
-                                    var svg = d3.select("#chart4 svg");
 
-                                    var donut = svg.selectAll("g.nv-slice").filter(
-                                      function (d, i) {
-                                        return i == 0;
-                                      }
-                                    );
-                                     // Insert first line of text into middle of donut pie chart
-                                      donut.insert("text", "g")
-                                          .text("Time On")
-                                          .attr("class", "middle")
-                                          .attr("text-anchor", "middle")
-                                          .attr("dy", "-.55em")
-                                          .style("fill", "#000");
-                                      // Insert second line of text into middle of donut pie chart
-                                     donut.insert("text", "g")
-                                          .text("Page")
-                                          .attr("class", "middle")
-                                          .attr("text-anchor", "middle")
-                                          .attr("dy", ".85em")
-                                          .style("fill", "#000");
+
+                            // Different chart libraries to try
+
+                            /*var datastar = {
+                                        labels: ["January", "February", "March", "April", "May", "June", "July"],
+                                        datasets: [
+                                            {
+                                                label: "My First dataset",
+                                                backgroundColor: [
+                                                    'rgba(255, 99, 132, 0.2)',
+                                                    'rgba(54, 162, 235, 0.2)',
+                                                    'rgba(255, 206, 86, 0.2)',
+                                                    'rgba(75, 192, 192, 0.2)',
+                                                    'rgba(153, 102, 255, 0.2)',
+                                                    'rgba(255, 159, 64, 0.2)'
+                                                ],
+                                                borderColor: [
+                                                    'rgba(255,99,132,1)',
+                                                    'rgba(54, 162, 235, 1)',
+                                                    'rgba(255, 206, 86, 1)',
+                                                    'rgba(75, 192, 192, 1)',
+                                                    'rgba(153, 102, 255, 1)',
+                                                    'rgba(255, 159, 64, 1)'
+                                                ],
+                                                borderWidth: 1,
+                                                data: [65, 59, 80, 81, 56, 55, 40],
+                                            }
+                                        ]
+                                    };
+
+                                    var ctx=document.getElementById("myBarChart").getContext("2d");
+
+                                    var options = {
+
+                                      responsive : true
+                                     //maintainAspectRatio: true
                                     }
-                                  }
 
-                              d3.select("#chart4 svg")
-                                  .attr('width',width)
-                                  .attr('height',height)
-                                  .datum([{"label":"Performance","value":((data1.avgTimeOnPage)/60).toFixed(2)},{"label":"Benchmark","value":((data1['B.TOP'])/60).toFixed(2)}])
-                                  .transition().duration(300)
-                                  .call(centerText())
-                                  //.call(pieSlice())
-                                  .call(chart)
-                                  ;
-
-                            return chart;
-                          });
-
-                                                      var opts = {
-                              lines: 12, // The number of lines to draw
-                              angle: 0, // The length of each line
-                              lineWidth: 0.11, // The line thickness
-                              pointer: {
-                                length: 0.9, // The radius of the inner circle
-                                strokeWidth: 0.049, // The rotation offset
-                                color: '#000000' // Fill color
-                              },
-                              limitMax: 'false',   // If true, the pointer will not go past the end of the gauge
-                              colorStart: '#6FADCF',   // Colors
-                              colorStop: '#8FC0DA',    // just experiment with them
-                              strokeColor: '#E0E0E0',   // to see which ones work best for you
-                              generateGradient: true
-                            };
-                            var target = document.getElementById('select-1'); // your canvas element
-                            var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
-                            gauge.maxValue = 5; // set max gauge value
-                            gauge.animationSpeed = 128; // set animation speed (32 is default value)
-                            gauge.set(data1['B.TOP']); // set actual value
+                                    var myBarChart = new Chart(ctx, {
+                                        type: 'horizontalBar',
+                                        data: datastar,
+                                        options: options
+                                    }); */
 
 
 
 
-                       
-                            //var cals=0;
-                            //cals=data1.avgTimeOnPage;
-                            //var g1= document.getElementById('g1');
-                            */
+
+                                     
+                          
+                         
                             if(g1)
                               g1.refresh(data1.avgTimeOnPage);
                             else
@@ -1217,7 +3021,6 @@ var redrawChart = function(targetID, newdata) {
                               generate4(data1['B.TOP']);
 
 
-
                           function generate(gage){
                    
                             g1 = new JustGage({
@@ -1226,6 +3029,7 @@ var redrawChart = function(targetID, newdata) {
                               value: data1.avgTimeOnPage,
                               min: 0,
                               max: 300,
+                              relativeGaugeSize: true,
                               pointer: true,
                               gaugeWidthScale: 0.6,
                               customSectors: [{
@@ -1238,6 +3042,7 @@ var redrawChart = function(targetID, newdata) {
                                 hi: 50
                               }],
                               counter: true,
+                              title:"Performance",
                               refreshAnimationTime: 1000
 
                   
@@ -1251,8 +3056,10 @@ var redrawChart = function(targetID, newdata) {
                                 value : data1.bounceRate,
                                 min: 0,
                                 max: 100,
+                                relativeGaugeSize: true,
                                 symbol:'%',
                                 decimals: 2,
+                                title:"Performance",
                                 gaugeWidthScale: 0.6,
                                 customSectors: [{
                                   color : "#00ff00",
@@ -1275,8 +3082,10 @@ var redrawChart = function(targetID, newdata) {
                                 value : data1['B.BounceRate'],
                                 min: 0,
                                 max: 100,
+                                relativeGaugeSize: true,
                                 symbol:'%',
                                 decimals: 2,
+                                title:"Expectation",
                                 gaugeWidthScale: 0.6,
                                 customSectors: [{
                                   color : "#00ff00",
@@ -1301,6 +3110,8 @@ var redrawChart = function(targetID, newdata) {
                               value: data1['B.TOP'],
                               min: 0,
                               max: 300,
+                              relativeGaugeSize: true,
+                              title:"Expectation",
                               pointer: true,
                               gaugeWidthScale: 0.6,
                               customSectors: [{
@@ -1319,109 +3130,99 @@ var redrawChart = function(targetID, newdata) {
                             });
                           }
 
-                          scrolld();
-
-                          //generate(data1.avgTimeOnPage);
-
-
-                             
-                            /* document.getElementById('chartRow').addEventListener('click',function(){
-
-                              g1.refresh(data1.avgTimeOnPage);
-                             });*/
-                      
-                                
-
-                                   
+                          //scrolld();
+                          document.getElementById('gtest').click();
 
 
+                          
 
-                            var html = '<table id="scores-table"><br><tr><th>Page</th><th>Score</th></tr>';
-      //var parsed=;
-      //html +='<p>'+parsed.length+'</p>';
-      
-        //console.log("inside the table");
-        html += '<tr><td>' + d.pageTitle + '</td><td>' + d.oms + '</td>' ;//+ scoreObj.sessions + '</td><td>' + scoreObj['B.Sessions'] + '</td><td>' + scoreObj.users + '</td><td>' +  scoreObj['B.Users'] +'</td></tr>';
-      
-      html+= '</table>';
-      $('#scores-container').html(html);
+                          //openData(event,'cq');
+                          $('#cq').html(d.pagePath);
+
+                          //var s1 = 'http\:\/\/';
+                          var prname2 = $("#profiles").find('option:selected').text();
+                          var tname = prname2+d.pagePath+'.html';
+                          var key = 'http\:\/\/www\.projectjumbo\.com\:9900\/content\-item\-details\.php\?key\=97Tm7Ru294zBJ\^kRAeqnFiWdj0\*0BZFRFuD\^Nh7A\&url\='
+                          //var p=document.getElementById(profiles).value;
+                         // console.log("Segment name trial" + s1);
+                          console.log(key+tname);
+
+
+
+
+
+
+
+
+
+
+        
 
     });
 
     
-              
+            
 
-         var blueScale = d3.scale.linear()
-                    //.domain([d3.min(d.oms), d3.max(d.oms)])
-                    .range(["lightblue", "darkblue"]);
+    
 
-/*var inverseBlue = d3.scale.linear()
-                    .domain([d3.max(d.oms), d3.min(d.oms)])
-                    .range(["lightblue", "darkblue"]);
-
-function contrastingColor(d) {
-  var barColor = d3.rgb(blueScale(d));
-  var color = d3.rgb(inverseBlue(d)); // start with the color from the inverse scale
-  if (isDark(barColor)) return color.brighter(2);
-  else return color.darker(2);
+function colores_google(n) {
+  var colores_g = ["#ffffcc","#ffeda0","#fed976","#feb24c","#fd8d3c","#fc4e2a","#e31a1c","#bd0026","#800026"];
+  return colores_g[n % colores_g.length];
 }
 
-function fill(selection, fillColor) {
-  selection.attr("fill", fillColor);
-  return selection;
+var c20c = d3.scale.category20c();
+
+function color_try(n)
+{
+var colorssss= ["#ffffcc","#ffeda0","#fed976","#feb24c","#fd8d3c","#fc4e2a","#e31a1c","#bd0026","#800026"];
+return colorssss;
 }
 
-// Thanks to tinycolor
-function getBrightness(color) {
-  //http://www.w3.org/TR/AERT#color-contrast
-  var rgb = d3.rgb(color)
-  return (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
-}
+var color2=d3.scale.ordinal()
+.range(["#800026","#bd0026","#e31a1c","#fc4e2a","#fd8d3c","#feb24c","#fed976","#ffeda0","#ffeda1","#ffffcc"]);//(["#ffffcc","#ffeda0","#fed976","#feb24c","#fd8d3c","#fc4e2a","#e31a1c","#bd0026","#800026"]);
 
-// Thanks to tinycolor
-function isDark(color) {
-  return getBrightness(color) < 128;
-}
+//(["#800026","#bd0026","#e31a1c","#fc4e2a","#fd8d3c","#feb24c","#fed976","#ffeda0","#ffffcc"]);
 
-// Thanks to tinycolor
-function isLight(color) {
-  return !isDark(color);
-} */
+//
+var color3 = d3.scale.ordinal()
+    .range(["#2c7bb6", "#00a6ca","#00ccbc","#90eb9d","#ffff8c","#f9d057","#f29e2e","#e76818","#d7191c"]);
+var barHeight=30;
 
 
   //Add rectangles
   newRow.insert("rect")
     .attr("class","bar")
-    .attr("x", 0)
-    .attr("opacity",0)
-    .attr("height", y.rangeBand())
-    .attr("width", function(d) { return x(d.oms);}) 
-    //.attr("fill", (d) => blueScale(d.oms));
+    .attr("height",barHeight-1)
+    .attr("width", 0)
+   .style("fill", function(d) { return color2(d.oms); })
+   .transition()
+   .duration(4000);
+   
     
-   // .style("fill",function (d) {return blueScale(d);});
-
+  
 
 
   //Add value labels
   newRow.append("text")
     .attr("class","label")
-    .attr("y", y.rangeBand()/2)
+    .attr("y", 25)
     .attr("x",0)
     .attr("opacity",0)
-    .attr("dy",".35em")
-    .attr("dx","0.5em")
-    .text(function(d){return d.oms;}); 
+    .attr("dy","0em")
+    .attr("dx","-2em")
+    //.style("text-decoration","underline")
+    .text(function(d){return d.oms;});
   
   //Add Headlines
   newRow.append("text")
     .attr("class","category")
-    .attr("text-overflow","ellipsis")
-    .attr("y", y.rangeBand()/2)
-    .attr("x",categoryIndent)
-    .attr("opacity",0)
+    .attr("y", 40)
+    .attr("x",0)
     .attr("dy",".35em")
-    .attr("dx","0.5em")
+    .style("text-decoration","underline")
+    .style("cursor","pointer")
     .text(function(d){return d.pageTitle});
+    //.text(function();
 
 
   //////////
@@ -1430,13 +3231,13 @@ function isLight(color) {
   
   //Update bar widths
   chartRow.select(".bar").transition()
-    .duration(300)
+    .duration(4000)
     .attr("width", function(d) { return x(d.oms);})
     .attr("opacity",1);
 
   //Update data labels
   chartRow.select(".label").transition()
-    .duration(300)
+    .duration(4000)
     .attr("opacity",1)
     .tween("text", function(d) { 
     var i = d3.interpolate(+this.textContent.replace(/\,/g,''), +d.oms);
@@ -1447,13 +3248,14 @@ function isLight(color) {
 
   //Fade in categories
   chartRow.select(".category").transition()
-    .duration(500)
+    .duration(1600)
     .attr("opacity",1);
 
 
   ////////
   //EXIT//
   ////////
+
 
   //Fade out and remove exit elements
   chartRow.exit().transition()
@@ -1470,11 +3272,36 @@ function isLight(color) {
 
   chartRow.transition()
     .delay(delay)
-    .duration(900)
+    .duration(1000)
     .attr("transform", function(d){ return "translate(0," + y(d.pageTitle) + ")"; });
+  //  .ease("bounce");
 };
 
 
+
+function wrap(text, width) {
+  text.each(function() {
+    var text = d3.select(this),
+        words = text.text().split(/\s+/).reverse(),
+        word,
+        line = [],
+        lineNumber = 0,
+        lineHeight = 1.1, // ems
+        y = text.attr("y"),
+        dy = parseFloat(text.attr("dy")),
+        tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+    while (word = words.pop()) {
+      line.push(word);
+      tspan.text(line.join(" "));
+      if (tspan.node().getComputedTextLength() > width) {
+        line.pop();
+        tspan.text(line.join(" "));
+        line = [word];
+        tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+      }
+    }
+  });
+}
 
 //Pulls data
 //Since our data is fake, adds some random changes to simulate a data stream.
@@ -1521,13 +3348,39 @@ redraw(settings)
 
 }
 
+/*
+$(function () { 
+    var myChart = Highcharts.chart('hscontainer', {
+        chart: {
+            type: 'bar'
+        },
+        credits: {
+      enabled: false
+  },
+        title: {
+            text: 'Fruit Consumption'
+        },
+        xAxis: {
+            categories: ['Apples', 'Bananas', 'Oranges']
+        },
+        yAxis: {
+            title: {
+                text: 'Fruit eaten'
+            }
+        },
+        series: [{
+            name: 'Jane',
+            data: [1, 0, 4]
+        }, {
+            name: 'John',
+            data: [5, 7, 3]
+        }]
+    });
+
+    $(window).resize();
+});*/
 
 
-  $(function () {
-            var options = {
-            };
-           
-        });
 
 
 
@@ -1535,6 +3388,18 @@ redraw(settings)
 
 
 </script>
+
+<script type="text/javascript">
+    $("#menu-toggle").click(function(e) {
+     // console.log("Button pressed for hiding the sidebar");
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+
+</script>
+
+
+</body>
   
 </html>
      
